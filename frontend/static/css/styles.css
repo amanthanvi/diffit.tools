@@ -183,6 +183,7 @@ textarea,
     position: relative;
     overflow: hidden;
     --left-pane-width: 50%;
+    /* Default values */
     --right-pane-width: 50%;
 }
 
@@ -255,6 +256,7 @@ td.diff_header {
 /* Support for resizable table structure */
 table.resizable-diff-table {
     table-layout: fixed;
+    width: 100%;
 }
 
 table.resizable-diff-table col.line-number-column {
@@ -263,6 +265,7 @@ table.resizable-diff-table col.line-number-column {
     max-width: 40px;
 }
 
+/* These rules use the CSS variables */
 table.resizable-diff-table col.content-column {
     width: var(--left-pane-width);
 }
@@ -303,59 +306,75 @@ tr th:first-child:contains("Legends") {
 
 /* --- COLUMN RESIZER --- */
 
-/* Column resizer element */
-.column-resizer {
-    width: 4px;
-    background-color: var(--resizer-color);
-    position: absolute;
-    top: 0;
-    bottom: 0;
+/* Add a visual indication when resizing */
+.diff-container.resizing-active {
     cursor: col-resize;
-    z-index: 100;
-    transition: background-color 0.2s;
-    left: 50%;
 }
 
-/* Grip indicator inside the resizer for better visibility */
+/* Column resizer element - the vertical handle */
+.column-resizer {
+    position: absolute;
+    top: 0;
+    width: 6px;
+    /* Slightly wider for easier grabbing */
+    background-color: var(--resizer-color);
+    cursor: col-resize;
+    z-index: 100;
+    /* Important: We position with left: X% in JavaScript */
+}
+
+/* Grip indicator - the visual "handle" */
 .grip-indicator {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 10px;
+    width: 12px;
     height: 40px;
     background-color: var(--resizer-color);
     border-radius: 3px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    align-items: center;
+    opacity: 0.7;
+    transition: width 0.2s, height 0.2s, opacity 0.2s, background-color 0.2s;
 }
 
-/* Dot pattern inside grip indicator */
+/* Grip indicator dots for visual feedback */
 .grip-indicator::before,
 .grip-indicator::after {
     content: "";
-    display: block;
+    position: absolute;
     width: 2px;
     height: 2px;
     background-color: var(--bg-color);
     border-radius: 50%;
-    box-shadow: 0 -5px 0 var(--bg-color), 0 5px 0 var(--bg-color);
 }
 
-/* Styles for active resizer */
-.column-resizer:hover,
-.column-resizer.resizing {
-    background-color: var(--resizer-hover-color);
-    width: 6px;
+.grip-indicator::before {
+    top: 35%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 -6px 0 var(--bg-color), 0 6px 0 var(--bg-color);
 }
 
+.grip-indicator::after {
+    top: 65%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 -6px 0 var(--bg-color), 0 6px 0 var(--bg-color);
+}
+
+/* Active/hover styles for the resizer */
 .column-resizer:hover .grip-indicator,
 .column-resizer.resizing .grip-indicator {
     background-color: var(--resizer-hover-color);
-    width: 12px;
+    width: 14px;
     height: 50px;
+    opacity: 0.9;
+}
+
+/* Modified styling during active resizing */
+body.resizing {
+    cursor: col-resize !important;
+    user-select: none !important;
 }
 
 /* Tables */
