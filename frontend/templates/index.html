@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Diffit Tools - Compare Text, Files, and PDFs</title>
+		<link
+			rel="stylesheet"
+			href="{{ url_for('static', path='/css/styles.css') }}"
+		/>
+		<!-- Optional: Use a CSS framework like Bootstrap or Tailwind -->
+		<link
+			href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+			rel="stylesheet"
+		/>
+	</head>
+	<body class="light-mode">
+		<header class="container mt-4">
+			<div class="d-flex justify-content-between align-items-center">
+				<h1>Diffit Tools</h1>
+				<button id="darkModeToggle" class="btn btn-outline-dark">
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						width="16"
+						height="16"
+						fill="currentColor"
+						class="bi bi-moon"
+						viewBox="0 0 16 16"
+					>
+						<path
+							d="M6 .278a.768.768 0 0 1 .08.858 7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.752.752 0 0 1 6 .278z"
+						/>
+					</svg>
+					<span>Toggle Dark Mode</span>
+				</button>
+			</div>
+			<p class="lead">
+				A lightweight, free, and open-source online diff utility
+			</p>
+		</header>
+
+		<main class="container my-4">
+			<!-- Tabs for different diff types -->
+			<ul class="nav nav-tabs" id="diffTabs" role="tablist">
+				<li class="nav-item" role="presentation">
+					<button
+						class="nav-link active"
+						id="text-tab"
+						data-bs-toggle="tab"
+						data-bs-target="#text"
+						type="button"
+						role="tab"
+						aria-controls="text"
+						aria-selected="true"
+					>
+						Text Diff
+					</button>
+				</li>
+				<li class="nav-item" role="presentation">
+					<button
+						class="nav-link"
+						id="file-tab"
+						data-bs-toggle="tab"
+						data-bs-target="#file"
+						type="button"
+						role="tab"
+						aria-controls="file"
+						aria-selected="false"
+					>
+						File Diff
+					</button>
+				</li>
+				<li class="nav-item" role="presentation">
+					<button
+						class="nav-link"
+						id="pdf-tab"
+						data-bs-toggle="tab"
+						data-bs-target="#pdf"
+						type="button"
+						role="tab"
+						aria-controls="pdf"
+						aria-selected="false"
+					>
+						PDF Diff
+					</button>
+				</li>
+			</ul>
+
+			<!-- Tab content -->
+			<div class="tab-content" id="diffTabsContent">
+				<!-- Text Diff -->
+				<div
+					class="tab-pane fade show active"
+					id="text"
+					role="tabpanel"
+					aria-labelledby="text-tab"
+				>
+					<div class="card mt-3">
+						<div class="card-body">
+							<h5 class="card-title">Compare Text</h5>
+							<form action="/diff/text" method="post">
+								<div class="row">
+									<div class="col-md-6 mb-3">
+										<label for="text1" class="form-label"
+											>Text 1</label
+										>
+										<textarea
+											class="form-control"
+											id="text1"
+											name="text1"
+											rows="10"
+											required
+										></textarea>
+									</div>
+									<div class="col-md-6 mb-3">
+										<label for="text2" class="form-label"
+											>Text 2</label
+										>
+										<textarea
+											class="form-control"
+											id="text2"
+											name="text2"
+											rows="10"
+											required
+										></textarea>
+									</div>
+								</div>
+								<div class="mb-3">
+									<label class="form-label">Diff Type</label>
+									<div class="form-check">
+										<input
+											class="form-check-input"
+											type="radio"
+											name="diff_type"
+											id="lineByLine"
+											value="line"
+											checked
+										/>
+										<label
+											class="form-check-label"
+											for="lineByLine"
+											>Line by Line</label
+										>
+									</div>
+									<div class="form-check">
+										<input
+											class="form-check-input"
+											type="radio"
+											name="diff_type"
+											id="wordByWord"
+											value="word"
+										/>
+										<label
+											class="form-check-label"
+											for="wordByWord"
+											>Word by Word</label
+										>
+									</div>
+									<div class="form-check">
+										<input
+											class="form-check-input"
+											type="radio"
+											name="diff_type"
+											id="charByChar"
+											value="char"
+										/>
+										<label
+											class="form-check-label"
+											for="charByChar"
+											>Character by Character</label
+										>
+									</div>
+								</div>
+								<button type="submit" class="btn btn-primary">
+									Compare
+								</button>
+							</form>
+						</div>
+					</div>
+				</div>
+
+				<!-- File Diff -->
+				<div
+					class="tab-pane fade"
+					id="file"
+					role="tabpanel"
+					aria-labelledby="file-tab"
+				>
+					<div class="card mt-3">
+						<div class="card-body">
+							<h5 class="card-title">Compare Files</h5>
+							<form
+								action="/diff/file"
+								method="post"
+								enctype="multipart/form-data"
+							>
+								<div class="row">
+									<div class="col-md-6 mb-3">
+										<label for="file1" class="form-label"
+											>File 1</label
+										>
+										<input
+											class="form-control"
+											type="file"
+											id="file1"
+											name="file1"
+											required
+										/>
+									</div>
+									<div class="col-md-6 mb-3">
+										<label for="file2" class="form-label"
+											>File 2</label
+										>
+										<input
+											class="form-control"
+											type="file"
+											id="file2"
+											name="file2"
+											required
+										/>
+									</div>
+								</div>
+								<div class="mb-3">
+									<label class="form-label">Diff Type</label>
+									<div class="form-check">
+										<input
+											class="form-check-input"
+											type="radio"
+											name="diff_type"
+											id="fileLineByLine"
+											value="line"
+											checked
+										/>
+										<label
+											class="form-check-label"
+											for="fileLineByLine"
+											>Line by Line</label
+										>
+									</div>
+									<div class="form-check">
+										<input
+											class="form-check-input"
+											type="radio"
+											name="diff_type"
+											id="fileWordByWord"
+											value="word"
+										/>
+										<label
+											class="form-check-label"
+											for="fileWordByWord"
+											>Word by Word</label
+										>
+									</div>
+									<div class="form-check">
+										<input
+											class="form-check-input"
+											type="radio"
+											name="diff_type"
+											id="fileCharByChar"
+											value="char"
+										/>
+										<label
+											class="form-check-label"
+											for="fileCharByChar"
+											>Character by Character</label
+										>
+									</div>
+								</div>
+								<button type="submit" class="btn btn-primary">
+									Compare
+								</button>
+							</form>
+						</div>
+					</div>
+				</div>
+
+				<!-- PDF Diff -->
+				<div
+					class="tab-pane fade"
+					id="pdf"
+					role="tabpanel"
+					aria-labelledby="pdf-tab"
+				>
+					<div class="card mt-3">
+						<div class="card-body">
+							<h5 class="card-title">Compare PDFs</h5>
+							<form
+								action="/diff/pdf"
+								method="post"
+								enctype="multipart/form-data"
+							>
+								<div class="row">
+									<div class="col-md-6 mb-3">
+										<label for="pdfFile1" class="form-label"
+											>PDF File 1</label
+										>
+										<input
+											class="form-control"
+											type="file"
+											id="pdfFile1"
+											name="file1"
+											accept=".pdf"
+											required
+										/>
+									</div>
+									<div class="col-md-6 mb-3">
+										<label for="pdfFile2" class="form-label"
+											>PDF File 2</label
+										>
+										<input
+											class="form-control"
+											type="file"
+											id="pdfFile2"
+											name="file2"
+											accept=".pdf"
+											required
+										/>
+									</div>
+								</div>
+								<div class="mb-3">
+									<label class="form-label">Diff Type</label>
+									<div class="form-check">
+										<input
+											class="form-check-input"
+											type="radio"
+											name="diff_type"
+											id="pdfLineByLine"
+											value="line"
+											checked
+										/>
+										<label
+											class="form-check-label"
+											for="pdfLineByLine"
+											>Line by Line</label
+										>
+									</div>
+									<div class="form-check">
+										<input
+											class="form-check-input"
+											type="radio"
+											name="diff_type"
+											id="pdfWordByWord"
+											value="word"
+										/>
+										<label
+											class="form-check-label"
+											for="pdfWordByWord"
+											>Word by Word</label
+										>
+									</div>
+									<div class="form-check">
+										<input
+											class="form-check-input"
+											type="radio"
+											name="diff_type"
+											id="pdfCharByChar"
+											value="char"
+										/>
+										<label
+											class="form-check-label"
+											for="pdfCharByChar"
+											>Character by Character</label
+										>
+									</div>
+								</div>
+								<button type="submit" class="btn btn-primary">
+									Compare
+								</button>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Diff Result Display -->
+			{% if diff_result %}
+			<div class="card mt-4">
+				<div
+					class="card-header d-flex justify-content-between align-items-center"
+				>
+					<h5>Diff Result</h5>
+					<div>
+						{% if share_url %}
+						<button
+							id="copyShareUrl"
+							class="btn btn-sm btn-outline-secondary"
+							data-share-url="{{ share_url }}"
+						>
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								width="16"
+								height="16"
+								fill="currentColor"
+								class="bi bi-link-45deg"
+								viewBox="0 0 16 16"
+							>
+								<path
+									d="M4.715 6.542 3.343 7.914a3 3 0 1 0 4.243 4.243l1.828-1.829A3 3 0 0 0 8.586 5.5L8 6.086a1.002 1.002 0 0 0-.154.199 2 2 0 0 1 .861 3.337L6.88 11.45a2 2 0 1 1-2.83-2.83l.793-.792a4.018 4.018 0 0 1-.128-1.287z"
+								/>
+								<path
+									d="M6.586 4.672A3 3 0 0 0 7.414 9.5l.775-.776a2 2 0 0 1-.896-3.346L9.12 3.55a2 2 0 1 1 2.83 2.83l-.793.792c.112.42.155.855.128 1.287l1.372-1.372a3 3 0 1 0-4.243-4.243L6.586 4.672z"
+								/>
+							</svg>
+							Copy Share Link
+						</button>
+						{% endif %}
+						<div class="btn-group">
+							<button
+								class="btn btn-sm btn-outline-secondary dropdown-toggle"
+								type="button"
+								data-bs-toggle="dropdown"
+								aria-expanded="false"
+							>
+								Export
+							</button>
+							<ul class="dropdown-menu">
+								<li>
+									<a
+										class="dropdown-item"
+										href="{{ share_url }}/pdf"
+										>PDF</a
+									>
+								</li>
+								<li>
+									<a
+										class="dropdown-item"
+										href="{{ share_url }}/markdown"
+										>Markdown</a
+									>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<div class="card-body diff-result">
+					<!-- Diff Container with sanitized content -->
+					<div class="diff-container">{{ diff_result | safe }}</div>
+				</div>
+			</div>
+			{% endif %} {% if error %}
+			<div class="alert alert-danger mt-4" role="alert">{{ error }}</div>
+			{% endif %}
+		</main>
+
+		<footer class="container mt-5 mb-4 text-center">
+			<p>
+				Diffit Tools - A lightweight, free, and open-source online diff
+				utility
+			</p>
+			<p>
+				<small
+					>© 2025 Diffit Tools.
+					<a
+						href="https://github.com/amanthanvi/diffit.tools"
+						target="_blank"
+						>GitHub</a
+					></small
+				>
+			</p>
+		</footer>
+
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+		<script src="{{ url_for('static', path='/js/main.js') }}"></script>
+		<script src="{{ url_for('static', path='/js/diff-resizer.js') }}"></script>
+	</body>
+</html>

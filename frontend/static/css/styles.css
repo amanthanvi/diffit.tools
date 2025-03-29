@@ -1,0 +1,536 @@
+/* Base theme variables */
+:root {
+    --bg-color: #ffffff;
+    --text-color: #333333;
+    --header-bg: #f8f9fa;
+    --border-color: #dee2e6;
+    --link-color: #007bff;
+    --diff-add-bg: #e6ffed;
+    --diff-add-text: #24292e;
+    --diff-sub-bg: #ffeef0;
+    --diff-sub-text: #24292e;
+    --diff-chg-bg: #fff5b1;
+    --diff-chg-text: #24292e;
+    --diff-header-bg: #f1f8ff;
+    --diff-header-text: #0366d6;
+    --table-header-bg: #f8f9fa;
+    --table-header-text: #495057;
+    --button-bg: #007bff;
+    --button-text: #ffffff;
+    --input-bg: #ffffff;
+    --input-border: #ced4da;
+    --input-text: #495057;
+    --code-bg: #f8f9fa;
+    --dropdown-bg: #ffffff;
+    --modal-bg: #ffffff;
+    --secondary-bg: #f8f9fa;
+    --pre-bg: #f5f5f5;
+    --resizer-color: #999;
+    --resizer-hover-color: #0d6efd;
+}
+
+/* Dark theme variables */
+[data-theme="dark"],
+.dark-mode {
+    --bg-color: #121212;
+    --text-color: #e0e0e0;
+    --header-bg: #1e1e1e;
+    --border-color: #444444;
+    --link-color: #58a6ff;
+    --diff-add-bg: #0f5323;
+    --diff-add-text: #b9f2c7;
+    --diff-sub-bg: #5c1a1a;
+    --diff-sub-text: #ffb3b3;
+    --diff-chg-bg: #5c4a1a;
+    --diff-chg-text: #ffe8b3;
+    --diff-header-bg: #0d1c2f;
+    --diff-header-text: #58a6ff;
+    --table-header-bg: #2d2d2d;
+    --table-header-text: #e0e0e0;
+    --button-bg: #0d47a1;
+    --button-text: #ffffff;
+    --input-bg: #2d2d2d;
+    --input-border: #444444;
+    --input-text: #e0e0e0;
+    --code-bg: #2d2d2d;
+    --dropdown-bg: #2d2d2d;
+    --modal-bg: #2d2d2d;
+    --secondary-bg: #1e1e1e;
+    --pre-bg: #252525;
+    --resizer-color: #666;
+    --resizer-hover-color: #58a6ff;
+}
+
+/* Apply theme to elements */
+body,
+html {
+    background-color: var(--bg-color) !important;
+    color: var(--text-color) !important;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Headers */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.h1,
+.h2,
+.h3,
+.h4,
+.h5,
+.h6 {
+    color: var(--text-color) !important;
+}
+
+/* Links */
+a,
+.btn-link {
+    color: var(--link-color);
+}
+
+a:hover,
+.btn-link:hover {
+    color: var(--link-color);
+    filter: brightness(120%);
+}
+
+/* Button active/selected states */
+.btn.active,
+.btn:active,
+.btn-check:checked+.btn,
+.btn-check:active+.btn,
+.nav-pills .nav-link.active,
+.btn-group>.btn.active,
+[role="button"].active,
+.form-check-input:checked {
+    background-color: var(--link-color) !important;
+    color: #ffffff !important;
+    border-color: var(--link-color) !important;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* Ensure diff type selection bubbles are visible in both modes */
+.diff-type-selector .btn.active,
+.diff-type-selector .btn:active,
+.diff-type-selector .btn-check:checked+.btn,
+.diff-options .btn.active,
+.diff-options .btn:active,
+.diff-options .btn-check:checked+.btn {
+    background-color: var(--link-color) !important;
+    color: white !important;
+    border-color: var(--link-color) !important;
+    position: relative;
+    z-index: 1;
+}
+
+/* Add a subtle outline to make selection more visible */
+.btn-outline-primary.active,
+.btn-outline-secondary.active,
+.btn-outline-success.active,
+.btn-outline-info.active,
+.btn-outline-warning.active,
+.btn-outline-danger.active,
+.btn-outline-light.active,
+.btn-outline-dark.active {
+    box-shadow: 0 0 0 0.15rem var(--link-color);
+}
+
+/* Input elements */
+input,
+select,
+textarea,
+.form-control,
+.custom-select,
+.input-group-text {
+    background-color: var(--input-bg) !important;
+    border-color: var(--input-border) !important;
+    color: var(--input-text) !important;
+}
+
+/* Buttons */
+.btn {
+    border-color: var(--border-color);
+}
+
+/* Bootstrap specific components */
+.bg-light {
+    background-color: var(--secondary-bg) !important;
+}
+
+.bg-white {
+    background-color: var(--bg-color) !important;
+}
+
+.text-dark {
+    color: var(--text-color) !important;
+}
+
+/* --- DIFF TABLE STYLES --- */
+
+/* Core diff table styling */
+.diff-result {
+    overflow-x: auto;
+    max-width: 100%;
+    margin-top: 1rem;
+    padding: 0;
+}
+
+/* Make container relative for absolute positioning of resizer */
+.diff-container {
+    position: relative;
+    overflow: hidden;
+    --left-pane-width: 50%;
+    --right-pane-width: 50%;
+}
+
+/* Reset specific table styles to allow for better diff display */
+.diff,
+.diff-enhanced {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    line-height: 1.5;
+    margin: 0;
+    table-layout: fixed;
+}
+
+/* Improve cell styling for readability */
+.diff td,
+.diff th,
+.diff-enhanced td,
+.diff-enhanced th {
+    border: none;
+    padding: 1px 8px;
+}
+
+/* Table headers */
+.diff th,
+.diff-enhanced th {
+    background-color: var(--table-header-bg) !important;
+    color: var(--table-header-text) !important;
+    font-weight: bold;
+    border-bottom: 1px solid var(--border-color);
+    padding: 8px;
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    text-align: left;
+}
+
+/* Ensure proper text wrapping */
+.diff td,
+.diff-enhanced td {
+    white-space: pre-wrap;
+    word-break: break-word;
+    vertical-align: top;
+}
+
+/* Line numbers styling */
+.diff_header,
+.line-number,
+td.diff_header {
+    background-color: var(--diff-header-bg) !important;
+    color: var(--diff-header-text) !important;
+    text-align: right;
+    padding-right: 10px;
+    padding-left: 4px;
+    width: 40px;
+    min-width: 40px;
+    max-width: 40px;
+    user-select: none;
+    border-right: 1px solid var(--border-color);
+    font-size: 12px;
+}
+
+/* Column setup for diff tables */
+.diff col,
+.diff-enhanced col {
+    width: auto;
+}
+
+/* Support for resizable table structure */
+table.resizable-diff-table {
+    table-layout: fixed;
+}
+
+table.resizable-diff-table col.line-number-column {
+    width: 40px;
+    min-width: 40px;
+    max-width: 40px;
+}
+
+table.resizable-diff-table col.content-column {
+    width: var(--left-pane-width);
+}
+
+table.resizable-diff-table col.content-column:last-of-type {
+    width: var(--right-pane-width);
+}
+
+/* Diff highlighting */
+.diff_add,
+td.diff_add,
+span.diff_add {
+    background-color: var(--diff-add-bg) !important;
+    color: var(--diff-add-text) !important;
+}
+
+.diff_sub,
+td.diff_sub,
+span.diff_sub {
+    background-color: var(--diff-sub-bg) !important;
+    color: var(--diff-sub-text) !important;
+}
+
+.diff_chg,
+td.diff_chg,
+span.diff_chg {
+    background-color: var(--diff-chg-bg) !important;
+    color: var(--diff-chg-text) !important;
+}
+
+/* Legends section styling */
+tr th:first-child:contains("Legends") {
+    background-color: var(--table-header-bg) !important;
+    color: var(--table-header-text) !important;
+    padding: 8px;
+    text-align: left;
+}
+
+/* --- COLUMN RESIZER --- */
+
+/* Column resizer element */
+.column-resizer {
+    width: 4px;
+    background-color: var(--resizer-color);
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    cursor: col-resize;
+    z-index: 100;
+    transition: background-color 0.2s;
+    left: 50%;
+}
+
+/* Grip indicator inside the resizer for better visibility */
+.grip-indicator {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 10px;
+    height: 40px;
+    background-color: var(--resizer-color);
+    border-radius: 3px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+}
+
+/* Dot pattern inside grip indicator */
+.grip-indicator::before,
+.grip-indicator::after {
+    content: "";
+    display: block;
+    width: 2px;
+    height: 2px;
+    background-color: var(--bg-color);
+    border-radius: 50%;
+    box-shadow: 0 -5px 0 var(--bg-color), 0 5px 0 var(--bg-color);
+}
+
+/* Styles for active resizer */
+.column-resizer:hover,
+.column-resizer.resizing {
+    background-color: var(--resizer-hover-color);
+    width: 6px;
+}
+
+.column-resizer:hover .grip-indicator,
+.column-resizer.resizing .grip-indicator {
+    background-color: var(--resizer-hover-color);
+    width: 12px;
+    height: 50px;
+}
+
+/* Tables */
+table,
+.table {
+    color: var(--text-color) !important;
+    border-color: var(--border-color) !important;
+}
+
+/* Containers and cards */
+.card,
+.container,
+.container-fluid,
+.card-body,
+.card-header,
+.card-footer {
+    background-color: var(--bg-color) !important;
+    color: var(--text-color) !important;
+    border-color: var(--border-color) !important;
+}
+
+.modal-content,
+.modal-header,
+.modal-body,
+.modal-footer {
+    background-color: var(--modal-bg) !important;
+    color: var(--text-color) !important;
+    border-color: var(--border-color) !important;
+}
+
+.navbar,
+.navbar-light,
+.navbar-dark,
+.footer {
+    background-color: var(--header-bg) !important;
+    color: var(--text-color) !important;
+}
+
+.dropdown-menu {
+    background-color: var(--dropdown-bg) !important;
+    color: var(--text-color) !important;
+    border-color: var(--border-color) !important;
+}
+
+.dropdown-item {
+    color: var(--text-color) !important;
+}
+
+.dropdown-item:hover {
+    background-color: var(--header-bg) !important;
+}
+
+/* Code blocks and pre */
+pre,
+code,
+kbd,
+.code,
+[class*="language-"] {
+    background-color: var(--pre-bg) !important;
+    color: var(--text-color) !important;
+    border-color: var(--border-color) !important;
+}
+
+/* Lists */
+.list-group,
+.list-group-item {
+    background-color: var(--bg-color) !important;
+    color: var(--text-color) !important;
+    border-color: var(--border-color) !important;
+}
+
+/* File path and code headers */
+.file-header,
+.file-path,
+.code-header {
+    background-color: var(--header-bg) !important;
+    color: var(--text-color) !important;
+}
+
+/* Specific syntax highlighting overrides */
+.token,
+.hljs-keyword,
+.hljs-comment,
+.hljs-string,
+.hljs-number,
+.hljs-literal,
+.hljs-type,
+.hljs-tag,
+.hljs-attr,
+.hljs-value {
+    color: inherit !important;
+}
+
+/* Alerts and notifications */
+.alert,
+.toast,
+.badge {
+    border-color: var(--border-color) !important;
+}
+
+/* Misc containers that might be added dynamically */
+[class*="container"],
+[class*="wrapper"],
+[class*="content"],
+[class*="panel"],
+[class*="box"],
+[class*="section"] {
+    background-color: var(--bg-color) !important;
+    color: var(--text-color) !important;
+}
+
+/* Forms */
+.form-group,
+.form-check,
+.form-label,
+fieldset,
+legend {
+    color: var(--text-color) !important;
+}
+
+/* All transition for smooth theme changing */
+* {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Code editor specific styles */
+.CodeMirror,
+.ace_editor {
+    background-color: var(--code-bg) !important;
+    color: var(--text-color) !important;
+}
+
+/* Overrides for any inline styles - this is important to catch elements with style attributes */
+[style*="background"],
+[style*="background-color"] {
+    background-color: var(--bg-color) !important;
+}
+
+[style*="color"]:not([style*="background-color"]) {
+    color: var(--text-color) !important;
+}
+
+/* Fix for specific diff display issues */
+.diff-container td[nowrap="nowrap"] {
+    white-space: pre-wrap !important;
+    padding: 2px 8px;
+}
+
+/* Supporting the table layout */
+tbody,
+thead,
+tfoot {
+    background-color: inherit !important;
+}
+
+/* Ensure proper spacing in cells */
+.diff-container td {
+    padding: 2px 8px !important;
+}
+
+/* Fix for border display */
+.diff-container table,
+.diff-container tr,
+.diff-container td {
+    border: none !important;
+}
+
+/* Additional styles to ensure consistent table layout */
+.diff-container table {
+    table-layout: fixed;
+    width: 100%;
+}
+
+/* Make sure legends are properly styled */
+.diff-container table+table {
+    margin-top: 1rem;
+    border-top: 1px solid var(--border-color) !important;
+}
