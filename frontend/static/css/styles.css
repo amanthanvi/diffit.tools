@@ -25,8 +25,6 @@
     --modal-bg: #ffffff;
     --secondary-bg: #f8f9fa;
     --pre-bg: #f5f5f5;
-    --resizer-color: #999;
-    --resizer-hover-color: #0d6efd;
 }
 
 /* Dark theme variables */
@@ -57,8 +55,6 @@
     --modal-bg: #2d2d2d;
     --secondary-bg: #1e1e1e;
     --pre-bg: #252525;
-    --resizer-color: #666;
-    --resizer-hover-color: #58a6ff;
 }
 
 /* Apply theme to elements */
@@ -302,79 +298,6 @@ tr th:first-child:contains("Legends") {
     color: var(--table-header-text) !important;
     padding: 8px;
     text-align: left;
-}
-
-/* --- COLUMN RESIZER --- */
-
-/* Add a visual indication when resizing */
-.diff-container.resizing-active {
-    cursor: col-resize;
-}
-
-/* Column resizer element - the vertical handle */
-.column-resizer {
-    position: absolute;
-    top: 0;
-    width: 6px;
-    /* Slightly wider for easier grabbing */
-    background-color: var(--resizer-color);
-    cursor: col-resize;
-    z-index: 100;
-    /* Important: We position with left: X% in JavaScript */
-}
-
-/* Grip indicator - the visual "handle" */
-.grip-indicator {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 12px;
-    height: 40px;
-    background-color: var(--resizer-color);
-    border-radius: 3px;
-    opacity: 0.7;
-    transition: width 0.2s, height 0.2s, opacity 0.2s, background-color 0.2s;
-}
-
-/* Grip indicator dots for visual feedback */
-.grip-indicator::before,
-.grip-indicator::after {
-    content: "";
-    position: absolute;
-    width: 2px;
-    height: 2px;
-    background-color: var(--bg-color);
-    border-radius: 50%;
-}
-
-.grip-indicator::before {
-    top: 35%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    box-shadow: 0 -6px 0 var(--bg-color), 0 6px 0 var(--bg-color);
-}
-
-.grip-indicator::after {
-    top: 65%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    box-shadow: 0 -6px 0 var(--bg-color), 0 6px 0 var(--bg-color);
-}
-
-/* Active/hover styles for the resizer */
-.column-resizer:hover .grip-indicator,
-.column-resizer.resizing .grip-indicator {
-    background-color: var(--resizer-hover-color);
-    width: 14px;
-    height: 50px;
-    opacity: 0.9;
-}
-
-/* Modified styling during active resizing */
-body.resizing {
-    cursor: col-resize !important;
-    user-select: none !important;
 }
 
 /* Tables */

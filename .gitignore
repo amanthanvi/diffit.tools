@@ -41,3 +41,5 @@ tmp/
 
 # Database
 *.db
+
+.pytest_cache
