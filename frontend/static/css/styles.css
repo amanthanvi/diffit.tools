@@ -351,7 +351,7 @@ table,
 .navbar-dark,
 .footer {
 	background-color: var(--header-bg) !important;
-	color: var (--text-color) !important;
+	color: var(--text-color) !important;
 }
 
 .dropdown-menu {
@@ -384,7 +384,7 @@ kbd,
 .list-group-item {
 	background-color: var(--bg-color) !important;
 	color: var(--text-color) !important;
-	border-color: var (--border-color) !important;
+	border-color: var(--border-color) !important;
 }
 
 /* File path and code headers */
@@ -457,12 +457,6 @@ legend {
 
 [style*="color"]:not([style*="background-color"]) {
 	color: var(--text-color) !important;
-}
-
-/* Fix for specific diff display issues */
-.diff-container td[nowrap="nowrap"] {
-	white-space: pre !important; /* Changed from pre-wrap to pre */
-	padding: 2px 8px;
 }
 
 /* Supporting the table layout */
@@ -545,7 +539,6 @@ tfoot {
 
 /* Remove this conflicting rule entirely */
 .diff-container td[nowrap="nowrap"] {
-	/* white-space: pre !important; */ /* This causes problems */
 	padding: 2px 8px;
 }
 
@@ -554,4 +547,101 @@ tfoot {
 	white-space: pre-wrap !important;
 	overflow-wrap: break-word !important;
 	word-break: break-word !important;
+}
+
+/* Diff type controls at the top styling */
+.diff-controls-top {
+	display: flex;
+	background-color: var(--header-bg);
+	padding: 8px 16px;
+	border-bottom: 1px solid var(--border-color);
+}
+
+.diff-controls-top .btn-group {
+	margin-right: auto;
+}
+
+.diff-type-controls {
+	display: flex;
+	align-items: center;
+}
+
+/* Styling for the diff buttons */
+.diff-type-controls .btn-group form {
+	display: inline-block;
+}
+
+.diff-type-controls .btn-group .btn {
+	border-radius: 4px;
+	margin-right: 4px;
+}
+
+/* Add styles to make the diff result look more like your screenshot */
+.diff-result {
+	background-color: var(--bg-color);
+}
+
+/* Make diff table fill the container properly */
+.diff-container {
+	padding: 0;
+}
+
+/* Add a bottom border to the header */
+.card-header {
+	border-bottom: 1px solid var(--border-color);
+}
+
+/* Style the diff information area above the table */
+.diff-info {
+	padding: 8px 16px;
+	background-color: var(--header-bg);
+	border-bottom: 1px solid var(--border-color);
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+/* Style the table header */
+.diff-container th {
+	background-color: var(--table-header-bg) !important;
+	color: var(--table-header-text) !important;
+	font-weight: bold;
+	border-bottom: 1px solid var(--border-color);
+	padding: 8px 16px !important;
+}
+
+/* Ensure the diff buttons have proper spacing */
+.diff-controls-top form:not(:last-child) {
+	margin-right: 4px;
+}
+
+/* Override any Bootstrap styles that might interfere */
+.card-body.diff-result {
+	padding: 0 !important;
+}
+
+/* Ensure the table headers "Text 1" and "Text 2" are clearly visible */
+.diff-header-left,
+.diff-header-right {
+	font-weight: bold;
+	font-size: 14px;
+}
+
+/* Fix extra spacing in diff table */
+.diff,
+.diff-enhanced {
+	margin: 0 !important;
+}
+
+/* Adjust line number column width */
+.diff-col-number {
+	width: 40px !important;
+}
+
+/* Ensure consistent padding in all cells */
+.diff td,
+.diff th,
+.diff-enhanced td,
+.diff-enhanced th {
+	padding: 3px 8px !important;
 }
