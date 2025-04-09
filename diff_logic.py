@@ -1,11 +1,9 @@
 import difflib
-import tempfile
-import os
 import re
 import datetime
 import html
-from typing import Optional, Tuple, List
-import aiofiles
+from typing import Optional, List
+import io
 from pdfminer.high_level import extract_text
 import weasyprint
 import html2text
@@ -40,64 +38,27 @@ ALLOWED_ATTRIBUTES = {
 }
 
 
-async def extract_file_content(file):
-    """Extract text content from an uploaded file"""
-    content = ""
-    temp_file_path = None
-
+async def extract_file_content_from_bytes(content_bytes, filename):
+    """Extract text content from file bytes (no file system access)"""
     try:
-        # Create a temporary file
-        suffix = os.path.splitext(file.filename)[1]
-        with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as temp:
-            temp_file_path = temp.name
-
-        # Write the uploaded file content to the temporary file
-        async with aiofiles.open(temp_file_path, "wb") as out_file:
-            content = await file.read()
-            await out_file.write(content)
-
         # For text files, read as string
-        async with aiofiles.open(
-            temp_file_path, "r", encoding="utf-8", errors="ignore"
-        ) as f:
-            content = await f.read()
-
+        content = content_bytes.decode("utf-8", errors="ignore")
+        return content
     except Exception as e:
-        content = f"Error extracting content: {str(e)}"
-    finally:
-        # Clean up the temporary file
-        if temp_file_path and os.path.exists(temp_file_path):
-            os.unlink(temp_file_path)
-
-    return content
+        return f"Error extracting content: {str(e)}"
 
 
-async def extract_pdf_content(file):
-    """Extract text content from a PDF file using pdfminer.six"""
-    content = ""
-    temp_file_path = None
-
+async def extract_pdf_content_from_bytes(content_bytes):
+    """Extract text content from PDF bytes using pdfminer.six"""
     try:
-        # Create a temporary file
-        with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as temp:
-            temp_file_path = temp.name
+        # Create a BytesIO object
+        pdf_stream = BytesIO(content_bytes)
 
-        # Write the uploaded file content to the temporary file
-        async with aiofiles.open(temp_file_path, "wb") as out_file:
-            content = await file.read()
-            await out_file.write(content)
-
-        # Extract text using pdfminer.six
-        content = extract_text(temp_file_path)
-
+        # Extract text using pdfminer (stream-based)
+        text = extract_text(pdf_stream)
+        return text
     except Exception as e:
-        content = f"Error extracting PDF content: {str(e)}"
-    finally:
-        # Clean up the temporary file
-        if temp_file_path and os.path.exists(temp_file_path):
-            os.unlink(temp_file_path)
-
-    return content
+        return f"Error extracting PDF content: {str(e)}"
 
 
 def html_escape(text):
@@ -261,11 +222,6 @@ def custom_diff_renderer(
 
 def generate_text_diff(text1, text2, diff_type="line"):
     """Generate HTML diff between two text strings with secure sanitization"""
-    # Print input texts (truncated) for debugging
-    print(f"Input text1 (first 50 chars): {text1[:50]}")
-    print(f"Input text2 (first 50 chars): {text2[:50]}")
-    print(f"Using diff_type: {diff_type}")
-
     # Use our custom diff renderer instead of difflib's HTML output
     diff_html = custom_diff_renderer(text1, text2, diff_type)
 
@@ -333,37 +289,6 @@ def sanitize_html(html_content):
         )
 
     return clean_html
-
-
-def enhance_diff_html(html_content):
-    """Enhance the standard difflib HTML output with better styling and structure
-    Note: This function is kept for compatibility but is less important with custom diff renderer
-    """
-    # Clean up any style tag that might interfere
-    html_content = re.sub(
-        r'<style type="text/css">.*?</style>', "", html_content, flags=re.DOTALL
-    )
-
-    # Replace the table class for our custom styling
-    html_content = html_content.replace(
-        '<table class="diff"', '<table class="diff diff-enhanced"'
-    )
-
-    # CRITICAL: Convert nowrap attribute to appropriate whitespace handling
-    html_content = html_content.replace(
-        ' nowrap="nowrap"', ' style="white-space:pre-wrap;"'
-    )
-
-    # Add wrapper div for content preservation
-    for cell_type in ["diff_add", "diff_sub", "diff_chg"]:
-        html_content = re.sub(
-            f'<td class="{cell_type}"[^>]*>(.*?)</td>',
-            f'<td class="{cell_type}" style="white-space:pre-wrap;word-break:break-word;overflow-wrap:break-word;"><div class="diff-content-wrapper">\\1</div></td>',
-            html_content,
-            flags=re.DOTALL,
-        )
-
-    return html_content
 
 
 def html_to_pdf(html_content):
