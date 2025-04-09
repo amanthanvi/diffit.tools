@@ -5,7 +5,7 @@
 ## Overview
 Diffit Tools is a lightweight, free, and open-source online diff utility that allows users to compare text, files, and PDFs. The application provides an easy-to-use interface to generate visual diffs of user input and file content through a web-based interface.
 
-![Diffit Tools Screenshot]()
+![Diffit Tools Screenshot](diffit_screenshot.png)
 
 ## Live Demo
 [Diffit Tools](https://diffit-tools.vercel.app)
