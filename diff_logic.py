@@ -5,8 +5,6 @@ import html
 from typing import Optional, List
 import io
 from pdfminer.high_level import extract_text
-
-# import weasyprint
 from xhtml2pdf import pisa
 import html2text
 from io import BytesIO
