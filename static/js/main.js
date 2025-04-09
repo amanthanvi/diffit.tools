@@ -88,4 +88,112 @@ document.addEventListener("DOMContentLoaded", function () {
 				});
 		});
 	}
+
+	// Simple direct PDF export functionality
+	function setupPdfExport() {
+		console.log("Setting up PDF export...");
+
+		// Direct selector for the PDF button by ID
+		const pdfButton = document.getElementById("export-pdf-btn");
+
+		if (pdfButton) {
+			console.log("PDF button found, attaching click handler");
+
+			pdfButton.onclick = function (e) {
+				console.log("PDF button clicked");
+				e.preventDefault();
+
+				// Get the diff container
+				const diffContainer = document.querySelector(".diff-container");
+				if (!diffContainer) {
+					console.error("Diff container not found");
+					alert("Could not find diff content to export!");
+					return false;
+				}
+
+				console.log("Generating PDF...");
+
+				// Show loading state
+				const originalText = pdfButton.textContent;
+				pdfButton.textContent = "Generating PDF...";
+
+				try {
+					// Basic options
+					const options = {
+						margin: 10,
+						filename: "diffit-export.pdf",
+						image: { type: "jpeg", quality: 0.98 },
+						html2canvas: { scale: 2 },
+						jsPDF: {
+							unit: "mm",
+							format: "a4",
+							orientation: "landscape",
+						},
+					};
+
+					// Generate the PDF - direct approach from documentation
+					html2pdf(diffContainer, options)
+						.then(() => {
+							console.log("PDF generation complete");
+							pdfButton.textContent = originalText;
+						})
+						.catch((error) => {
+							console.error("PDF generation error:", error);
+							alert("PDF generation failed. Please try again.");
+							pdfButton.textContent = originalText;
+						});
+				} catch (error) {
+					console.error("Error starting PDF generation:", error);
+					alert("PDF generation failed. Please try again.");
+					pdfButton.textContent = originalText;
+				}
+
+				return false; // Prevent default link behavior
+			};
+		} else {
+			console.warn("PDF export button not found");
+		}
+	}
+
+	// Set up PDF export when page is loaded
+	setupPdfExport();
+});
+
+// Add a global event handler to catch the PDF export button in case DOM ready misses it
+window.addEventListener("load", function () {
+	console.log("Window loaded, checking for PDF button");
+
+	const pdfButton = document.getElementById("export-pdf-btn");
+	if (pdfButton && !pdfButton._hasClickHandler) {
+		console.log("Setting up PDF button handler on window load");
+
+		pdfButton._hasClickHandler = true;
+		pdfButton.addEventListener("click", function (e) {
+			console.log("PDF button clicked (window load handler)");
+			e.preventDefault();
+
+			const diffContainer = document.querySelector(".diff-container");
+			if (!diffContainer) {
+				alert("Could not find diff content to export!");
+				return false;
+			}
+
+			// Show loading state
+			const originalText = pdfButton.textContent;
+			pdfButton.textContent = "Generating PDF...";
+
+			// Simple direct call as shown in documentation
+			html2pdf(diffContainer, {
+				margin: 10,
+				filename: "diffit-export.pdf",
+				image: { type: "jpeg", quality: 0.98 },
+				html2canvas: { scale: 2 },
+				jsPDF: { unit: "mm", format: "a4", orientation: "landscape" },
+			}).then(() => {
+				pdfButton.textContent = originalText;
+			});
+
+			return false;
+		});
+	}
 });

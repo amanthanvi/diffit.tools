@@ -8,7 +8,7 @@ from fastapi import (
     HTTPException,
     BackgroundTasks,
 )
-from fastapi.responses import HTMLResponse, Response
+from fastapi.responses import HTMLResponse, Response, FileResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
@@ -91,6 +91,13 @@ templates = Jinja2Templates(directory=os.path.join(base_dir, "templates"))
 async def health_check():
     """Health check endpoint for monitoring"""
     return {"status": "healthy"}
+
+
+# Direct favicon route
+@app.get("/favicon.ico", include_in_schema=False)
+async def favicon():
+    """Handle direct favicon requests"""
+    return FileResponse(os.path.join(base_dir, "static", "favicon.ico"))
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -417,24 +424,12 @@ async def export_diff(
             filename = f"{db_diff.title.replace(' ', '_')[:30]}_{diff_id}"
 
         if format == "pdf":
-            try:
-                # Convert HTML to PDF
-                pdf_bytes = diff_logic.html_to_pdf(db_diff.content)
-                # Return PDF file
-                return Response(
-                    content=pdf_bytes,
-                    media_type="application/pdf",
-                    headers={
-                        "Content-Disposition": f"attachment; filename={filename}.pdf"
-                    },
-                )
-            except Exception as e:
-                logger.error(f"Error generating PDF: {e}")
-                # Return an error message
-                return Response(
-                    content="PDF generation failed. Please try using Markdown export instead.",
-                    media_type="text/plain",
-                )
+            # Return a message that PDF is handled client-side
+            # This is a fallback for users with JavaScript disabled
+            return Response(
+                content="PDF export is now handled in your browser. If you're seeing this message, please ensure JavaScript is enabled.",
+                media_type="text/plain",
+            )
         elif format == "markdown":
             # Convert HTML to Markdown
             markdown_text = diff_logic.html_to_markdown(db_diff.content)

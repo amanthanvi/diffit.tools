@@ -8,13 +8,28 @@
 			rel="stylesheet"
 			href="{{ url_for('static', path='/css/styles.css') }}"
 		/>
-		<link rel="icon" href="{{ url_for('static', path='/favicon.ico') }}" type="image/x-icon">
-    	<link rel="shortcut icon" href="{{ url_for('static', path='/favicon.ico') }}" type="image/x-icon">
-		<!-- Optional: Use a CSS framework like Bootstrap or Tailwind -->
+		<link
+			rel="icon"
+			href="{{ url_for('static', path='/favicon.ico') }}"
+			type="image/x-icon"
+		/>
+		<link
+			rel="shortcut icon"
+			href="{{ url_for('static', path='/favicon.ico') }}"
+			type="image/x-icon"
+		/>
+		<!-- Bootstrap CSS -->
 		<link
 			href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
 			rel="stylesheet"
 		/>
+		<!-- Add html2pdf.js library for client-side PDF generation -->
+		<script
+			src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"
+			integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg=="
+			crossorigin="anonymous"
+			referrerpolicy="no-referrer"
+		></script>
 	</head>
 	<body class="light-mode">
 		<header class="container mt-4">
@@ -112,7 +127,9 @@
 											name="text1"
 											rows="10"
 											required
-										>{% if text1 %}{{ text1 }}{% endif %}</textarea>
+										>
+{% if text1 %}{{ text1 }}{% endif %}</textarea
+										>
 									</div>
 									<div class="col-md-6 mb-3">
 										<label for="text2" class="form-label"
@@ -124,20 +141,19 @@
 											name="text2"
 											rows="10"
 											required
-										>{% if text2 %}{{ text2 }}{% endif %}</textarea>
+										>
+{% if text2 %}{{ text2 }}{% endif %}</textarea
+										>
 									</div>
 								</div>
 								<div class="mb-3">
 									<label class="form-label">Diff Type</label>
 									<div class="form-check">
-										<input 
-                                            class="form-check-input"
-											type="radio" 
-                                            name="diff_type"
-											id="lineByLine" 
-                                            value="line" 
-                                            {% if not selected_diff_type or selected_diff_type == 'line' %}checked{% endif %} 
-                                        />
+										<input class="form-check-input"
+										type="radio" name="diff_type"
+										id="lineByLine" value="line" {% if not
+										selected_diff_type or selected_diff_type
+										== 'line' %}checked{% endif %} />
 										<label
 											class="form-check-label"
 											for="lineByLine"
@@ -145,14 +161,11 @@
 										>
 									</div>
 									<div class="form-check">
-										<input 
-                                            class="form-check-input"
-											type="radio" 
-                                            name="diff_type"
-											id="wordByWord" 
-                                            value="word" 
-                                            {% if selected_diff_type == 'word' %}checked{% endif %} 
-                                        />
+										<input class="form-check-input"
+										type="radio" name="diff_type"
+										id="wordByWord" value="word" {% if
+										selected_diff_type == 'word' %}checked{%
+										endif %} />
 										<label
 											class="form-check-label"
 											for="wordByWord"
@@ -160,14 +173,11 @@
 										>
 									</div>
 									<div class="form-check">
-										<input 
-                                            class="form-check-input"
-											type="radio" 
-                                            name="diff_type"
-											id="charByChar" 
-                                            value="char" 
-                                            {% if selected_diff_type == 'char' %}checked{% endif %} 
-                                        />
+										<input class="form-check-input"
+										type="radio" name="diff_type"
+										id="charByChar" value="char" {% if
+										selected_diff_type == 'char' %}checked{%
+										endif %} />
 										<label
 											class="form-check-label"
 											for="charByChar"
@@ -227,14 +237,12 @@
 								<div class="mb-3">
 									<label class="form-label">Diff Type</label>
 									<div class="form-check">
-										<input
-											class="form-check-input"
-											type="radio"
-											name="diff_type"
-											id="fileLineByLine"
-											value="line"
-											{% if not selected_diff_type or selected_diff_type == 'line' %}checked{% endif %}
-										/>
+										<input class="form-check-input"
+										type="radio" name="diff_type"
+										id="fileLineByLine" value="line" {% if
+										not selected_diff_type or
+										selected_diff_type == 'line' %}checked{%
+										endif %} />
 										<label
 											class="form-check-label"
 											for="fileLineByLine"
@@ -242,14 +250,11 @@
 										>
 									</div>
 									<div class="form-check">
-										<input
-											class="form-check-input"
-											type="radio"
-											name="diff_type"
-											id="fileWordByWord"
-											value="word"
-											{% if selected_diff_type == 'word' %}checked{% endif %}
-										/>
+										<input class="form-check-input"
+										type="radio" name="diff_type"
+										id="fileWordByWord" value="word" {% if
+										selected_diff_type == 'word' %}checked{%
+										endif %} />
 										<label
 											class="form-check-label"
 											for="fileWordByWord"
@@ -257,14 +262,11 @@
 										>
 									</div>
 									<div class="form-check">
-										<input
-											class="form-check-input"
-											type="radio"
-											name="diff_type"
-											id="fileCharByChar"
-											value="char"
-											{% if selected_diff_type == 'char' %}checked{% endif %}
-										/>
+										<input class="form-check-input"
+										type="radio" name="diff_type"
+										id="fileCharByChar" value="char" {% if
+										selected_diff_type == 'char' %}checked{%
+										endif %} />
 										<label
 											class="form-check-label"
 											for="fileCharByChar"
@@ -326,14 +328,12 @@
 								<div class="mb-3">
 									<label class="form-label">Diff Type</label>
 									<div class="form-check">
-										<input
-											class="form-check-input"
-											type="radio"
-											name="diff_type"
-											id="pdfLineByLine"
-											value="line"
-											{% if not selected_diff_type or selected_diff_type == 'line' %}checked{% endif %}
-										/>
+										<input class="form-check-input"
+										type="radio" name="diff_type"
+										id="pdfLineByLine" value="line" {% if
+										not selected_diff_type or
+										selected_diff_type == 'line' %}checked{%
+										endif %} />
 										<label
 											class="form-check-label"
 											for="pdfLineByLine"
@@ -341,14 +341,11 @@
 										>
 									</div>
 									<div class="form-check">
-										<input
-											class="form-check-input"
-											type="radio"
-											name="diff_type"
-											id="pdfWordByWord"
-											value="word"
-											{% if selected_diff_type == 'word' %}checked{% endif %}
-										/>
+										<input class="form-check-input"
+										type="radio" name="diff_type"
+										id="pdfWordByWord" value="word" {% if
+										selected_diff_type == 'word' %}checked{%
+										endif %} />
 										<label
 											class="form-check-label"
 											for="pdfWordByWord"
@@ -356,14 +353,11 @@
 										>
 									</div>
 									<div class="form-check">
-										<input
-											class="form-check-input"
-											type="radio"
-											name="diff_type"
-											id="pdfCharByChar"
-											value="char"
-											{% if selected_diff_type == 'char' %}checked{% endif %}
-										/>
+										<input class="form-check-input"
+										type="radio" name="diff_type"
+										id="pdfCharByChar" value="char" {% if
+										selected_diff_type == 'char' %}checked{%
+										endif %} />
 										<label
 											class="form-check-label"
 											for="pdfCharByChar"
@@ -383,7 +377,9 @@
 			<!-- Diff Result Display -->
 			{% if diff_result %}
 			<div class="card mt-4">
-				<div class="card-header d-flex justify-content-between align-items-center">
+				<div
+					class="card-header d-flex justify-content-between align-items-center"
+				>
 					<h5>
 						Diff Result {% if has_stored_files %}
 						<small class="text-muted"
@@ -427,10 +423,19 @@
 							</button>
 							<ul class="dropdown-menu">
 								<li>
-									<a class="dropdown-item" href="/export/{{ share_url.split('/')[-1] }}/pdf">PDF</a>
+									<a
+										class="dropdown-item"
+										id="export-pdf-btn"
+										href="/export/{{ share_url.split('/')[-1] }}/pdf"
+										>PDF</a
+									>
 								</li>
 								<li>
-									<a class="dropdown-item" href="/export/{{ share_url.split('/')[-1] }}/markdown">Markdown</a>
+									<a
+										class="dropdown-item"
+										href="/export/{{ share_url.split('/')[-1] }}/markdown"
+										>Markdown</a
+									>
 								</li>
 							</ul>
 						</div>
@@ -442,21 +447,54 @@
 					{% if has_stored_files %}
 					<div class="diff-type-controls">
 						<div class="btn-group">
-							<form action="/diff/change-type" method="post" class="d-inline">
-								<input type="hidden" name="diff_type" value="line">
-								<button type="submit" class="btn btn-sm {% if selected_diff_type == 'line' %}btn-primary{% else %}btn-outline-secondary{% endif %}">
+							<form
+								action="/diff/change-type"
+								method="post"
+								class="d-inline"
+							>
+								<input
+									type="hidden"
+									name="diff_type"
+									value="line"
+								/>
+								<button
+									type="submit"
+									class="btn btn-sm {% if selected_diff_type == 'line' %}btn-primary{% else %}btn-outline-secondary{% endif %}"
+								>
 									Line by Line
 								</button>
 							</form>
-							<form action="/diff/change-type" method="post" class="d-inline mx-1">
-								<input type="hidden" name="diff_type" value="word">
-								<button type="submit" class="btn btn-sm {% if selected_diff_type == 'word' %}btn-primary{% else %}btn-outline-secondary{% endif %}">
+							<form
+								action="/diff/change-type"
+								method="post"
+								class="d-inline mx-1"
+							>
+								<input
+									type="hidden"
+									name="diff_type"
+									value="word"
+								/>
+								<button
+									type="submit"
+									class="btn btn-sm {% if selected_diff_type == 'word' %}btn-primary{% else %}btn-outline-secondary{% endif %}"
+								>
 									Word by Word
 								</button>
 							</form>
-							<form action="/diff/change-type" method="post" class="d-inline">
-								<input type="hidden" name="diff_type" value="char">
-								<button type="submit" class="btn btn-sm {% if selected_diff_type == 'char' %}btn-primary{% else %}btn-outline-secondary{% endif %}">
+							<form
+								action="/diff/change-type"
+								method="post"
+								class="d-inline"
+							>
+								<input
+									type="hidden"
+									name="diff_type"
+									value="char"
+								/>
+								<button
+									type="submit"
+									class="btn btn-sm {% if selected_diff_type == 'char' %}btn-primary{% else %}btn-outline-secondary{% endif %}"
+								>
 									Character by Character
 								</button>
 							</form>
@@ -488,22 +526,20 @@
 					<div class="diff-container">{{ diff_result | safe }}</div>
 				</div>
 			</div>
-			{% endif %} 
-			
-			{% if error %}
+			{% endif %} {% if error %}
 			<div class="alert alert-danger mt-4" role="alert">{{ error }}</div>
 			{% endif %}
 		</main>
 
 		<footer class="container mt-5 mb-4 text-center">
 			<p>
-				Diffit- A lightweight, free, and open-source online diff
+				Diffit - A lightweight, free, and open-source online diff
 				utility
 			</p>
 			<p>
 				<small
 					>© 2025 Diffit.
-					
+					<a
 						href="https://github.com/amanthanvi/diffit.tools"
 						target="_blank"
 						>GitHub</a
@@ -515,4 +551,8 @@
 		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 		<script src="{{ url_for('static', path='/js/main.js') }}"></script>
 	</body>
+	<!-- Add this somewhere visible for testing -->
+	<button id="test-pdf-btn" class="btn btn-sm btn-primary mt-2">
+		Test PDF Generation
+	</button>
 </html>
