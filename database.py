@@ -2,11 +2,12 @@ import os
 from sqlalchemy import Column, String, Text, DateTime, create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.pool import NullPool  # Import NullPool for serverless environments
 import datetime
 import logging
 from dotenv import load_dotenv
 
-# Load environment variables from .env file
+# Load environment variables from .env if available (for local development)
 load_dotenv()
 
 # Set up logging
@@ -16,24 +17,19 @@ logger = logging.getLogger("diffit.database")
 # Determine environment and set up appropriate database connection
 is_production = os.environ.get("VERCEL", "0") == "1"
 
-if is_production:
+DATABASE_URL = os.environ.get("DATABASE_URL")
+
+if is_production and DATABASE_URL:
     # Production mode with Supabase PostgreSQL
-    # First try to fetch a complete DATABASE_URL from the environment
-    DATABASE_URL = os.environ.get("DATABASE_URL")
-
-    # If DATABASE_URL is not provided, construct it from individual parameters
-    if not DATABASE_URL:
-        # Fetch individual environment variables (ensure these keys match your .env file)
-        USER = os.getenv("user")
-        PASSWORD = os.getenv("password")
-        HOST = os.getenv("host")
-        PORT = os.getenv("port")
-        DBNAME = os.getenv("dbname")
-
-        # Construct the SQLAlchemy connection string with SSL mode required
-        DATABASE_URL = f"postgresql+psycopg2://{USER}:{PASSWORD}@{HOST}:{PORT}/{DBNAME}?sslmode=require"
+    # Ensure that sslmode=require is appended (if not already present)
+    if "sslmode" not in DATABASE_URL:
+        connector = "?" if "?" not in DATABASE_URL else "&"
+        DATABASE_URL = f"{DATABASE_URL}{connector}sslmode=require"
 
     logger.info("Using production database configuration with PostgreSQL")
+
+    # For Vercel’s serverless environment, disable pooling with NullPool
+    engine = create_engine(DATABASE_URL, poolclass=NullPool)
 
     # Create the SQLAlchemy engine with production settings
     engine = create_engine(
