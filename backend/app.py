@@ -80,6 +80,9 @@ async def diff_text(
             "request": request,
             "diff_result": diff_html,
             "share_url": f"/diff/share/{diff_id}",
+            "text1": text1,  # Pass text1 back to the template
+            "text2": text2,  # Pass text2 back to the template
+            "selected_diff_type": diff_type,  # Pass selected diff type
         },
     )
 
