@@ -417,14 +417,24 @@ async def export_diff(
             filename = f"{db_diff.title.replace(' ', '_')[:30]}_{diff_id}"
 
         if format == "pdf":
-            # Convert HTML to PDF
-            pdf_bytes = diff_logic.html_to_pdf(db_diff.content)
-            # Return PDF file
-            return Response(
-                content=pdf_bytes,
-                media_type="application/pdf",
-                headers={"Content-Disposition": f"attachment; filename={filename}.pdf"},
-            )
+            try:
+                # Convert HTML to PDF
+                pdf_bytes = diff_logic.html_to_pdf(db_diff.content)
+                # Return PDF file
+                return Response(
+                    content=pdf_bytes,
+                    media_type="application/pdf",
+                    headers={
+                        "Content-Disposition": f"attachment; filename={filename}.pdf"
+                    },
+                )
+            except Exception as e:
+                logger.error(f"Error generating PDF: {e}")
+                # Return an error message
+                return Response(
+                    content="PDF generation failed. Please try using Markdown export instead.",
+                    media_type="text/plain",
+                )
         elif format == "markdown":
             # Convert HTML to Markdown
             markdown_text = diff_logic.html_to_markdown(db_diff.content)

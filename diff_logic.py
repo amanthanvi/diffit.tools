@@ -5,7 +5,9 @@ import html
 from typing import Optional, List
 import io
 from pdfminer.high_level import extract_text
-import weasyprint
+
+# import weasyprint
+from xhtml2pdf import pisa
 import html2text
 from io import BytesIO
 import bleach
@@ -292,11 +294,11 @@ def sanitize_html(html_content):
 
 
 def html_to_pdf(html_content):
-    """Convert HTML diff to PDF with proper formatting"""
+    """Convert HTML diff to PDF with proper formatting using xhtml2pdf"""
     # Create a BytesIO object to store the PDF content
-    pdf_buffer = BytesIO()
+    pdf_buffer = io.BytesIO()
 
-    # Extract title information - try to find the file names from the diff
+    # Extract title information
     title_match = re.search(r"<th.*?>(.*?)</th>\s*<th.*?>(.*?)</th>", html_content)
     left_title = "Text 1"
     right_title = "Text 2"
@@ -304,9 +306,8 @@ def html_to_pdf(html_content):
         left_title = title_match.group(1)
         right_title = title_match.group(2)
 
-    # Create a completely new HTML structure for PDF to ensure proper rendering
-    # This avoids relying on the existing HTML which might have formatting issues
-    styled_html = f"""
+    # Create a complete HTML document with CSS for better PDF rendering
+    complete_html = f"""
     <!DOCTYPE html>
     <html>
     <head>
@@ -314,123 +315,97 @@ def html_to_pdf(html_content):
         <title>Diff: {left_title} vs {right_title}</title>
         <style>
             @page {{
-                size: A4 landscape;
+                size: landscape;
                 margin: 1.5cm;
             }}
             body {{
-                font-family: 'DejaVu Sans', sans-serif;
+                font-family: Helvetica, Arial, sans-serif;
                 font-size: 10pt;
-                line-height: 1.4;
+                line-height: 1.3;
                 margin: 0;
                 padding: 0;
-                color: #333;
             }}
             h1 {{
-                font-size: 18pt;
+                font-size: 16pt;
                 margin-bottom: 15px;
-                padding-bottom: 8px;
-                border-bottom: 1px solid #ccc;
-                color: #444;
+                color: #333;
             }}
             table {{
-                border-collapse: separate;
-                border-spacing: 0;
                 width: 100%;
-                margin: 10px 0 20px 0;
-                table-layout: fixed;
-                font-family: 'DejaVu Sans Mono', monospace;
-                font-size: 9pt;
+                border-collapse: collapse;
+                margin-top: 10px;
+                margin-bottom: 20px;
+                font-family: "Courier New", Courier, monospace;
+                font-size: 8pt;
             }}
-            thead {{
-                display: table-header-group;
-            }}
-            tbody {{
-                display: table-row-group;
+            th, td {{
+                border: 1px solid #ddd;
+                padding: 4px;
+                text-align: left;
+                vertical-align: top;
             }}
             th {{
                 background-color: #f2f2f2;
-                padding: 8px 10px;
-                text-align: left;
-                border-bottom: 1px solid #ddd;
                 font-weight: bold;
-                font-size: 10pt;
+                color: #333;
             }}
-            .diff-header-left, .diff-header-right {{
-                width: 45%;
-                min-width: 200px;
-            }}
-            .diff-header-spacer {{
-                width: 5%;
-                min-width: 40px;
-                max-width: 40px;
-            }}
-            td {{
-                padding: 4px 6px;
-                border-bottom: 1px solid #eee;
-                vertical-align: top;
-                word-wrap: break-word;
-                overflow-wrap: break-word;
-                white-space: pre-wrap;
-            }}
-            .line-number {{
-                width: 5%;
-                min-width: 40px;
-                max-width: 40px;
+            td.diff_header {{
+                width: 35px;
                 text-align: right;
                 background-color: #f8f8f8;
-                color: #999;
+                color: #666;
                 padding-right: 8px;
-                font-size: 8pt;
             }}
-            .diff-content {{
-                width: 45%;
-                word-break: break-all;
-            }}
-            .diff_add {{
+            td.diff_add {{
                 background-color: #e6ffed;
-                border-left: 2px solid #2cbe4e;
             }}
-            .diff_sub {{
+            td.diff_sub {{
                 background-color: #ffeef0;
-                border-left: 2px solid #ff4d4f;
             }}
-            .diff_chg {{
-                background-color: #fff5b1;
-                border-left: 2px solid #f6a33a;
-            }}
-            footer {{
-                margin-top: 25px;
+            .footer {{
+                margin-top: 20px;
                 border-top: 1px solid #eee;
-                padding-top: 8px;
+                padding-top: 10px;
                 font-size: 9pt;
                 color: #666;
                 text-align: center;
-            }}
-            @media print {{
-                table {{ page-break-inside: auto; }}
-                tr {{ page-break-inside: avoid; page-break-after: auto; }}
-                thead {{ display: table-header-group; }}
-                tfoot {{ display: table-footer-group; }}
             }}
         </style>
     </head>
     <body>
         <h1>Comparison: {left_title} vs {right_title}</h1>
-        <!-- Extract just the table content from the original HTML and carefully reconstruct it -->
-        {sanitize_html(html_content)}
-        <footer>Generated by Diffit Tools on {datetime.date.today().strftime('%Y-%m-%d')}</footer>
+        
+        {html_content}
+        
+        <div class="footer">
+            Generated by Diffit Tools on {datetime.date.today().strftime('%Y-%m-%d')}
+        </div>
     </body>
     </html>
     """
 
     # Convert HTML to PDF
-    weasyprint.HTML(string=styled_html).write_pdf(pdf_buffer)
+    pisa_status = pisa.CreatePDF(
+        complete_html,  # HTML content
+        dest=pdf_buffer,  # Output file handle
+        encoding="utf-8",  # Encoding
+    )
 
-    # Get the PDF content
-    pdf_bytes = pdf_buffer.getvalue()
+    # Check if conversion was successful
+    if pisa_status.err:
+        # If error, return a simple error message as PDF
+        error_pdf = io.BytesIO()
+        pisa.CreatePDF(
+            f"<html><body><h1>Error generating PDF</h1><p>There was an error generating the PDF. Please try exporting as Markdown instead.</p></body></html>",
+            dest=error_pdf,
+        )
+        return error_pdf.getvalue()
+
+    # Get PDF content
+    pdf_content = pdf_buffer.getvalue()
     pdf_buffer.close()
 
-    return pdf_bytes
+    return pdf_content
 
 
 def html_to_markdown(html_content):
