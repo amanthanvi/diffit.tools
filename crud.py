@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 import datetime
-from . import database
+import database
 
 
 def get_diff(db: Session, diff_id: str):

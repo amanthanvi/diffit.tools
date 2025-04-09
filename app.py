@@ -20,7 +20,7 @@ import secrets
 import logging
 import json
 from contextlib import asynccontextmanager
-from . import diff_logic, database, crud
+import diff_logic, database, crud
 
 
 # Configure logging
@@ -75,11 +75,15 @@ app = FastAPI(title="Diffit Tools", lifespan=lifespan)
 # Add session middleware with secure settings
 app.add_middleware(SessionMiddleware, secret_key=get_secret_key(), **SESSION_SETTINGS)
 
+# Determine the base directory
+base_dir = os.path.dirname(os.path.abspath(__file__))
 # Mount static files
-app.mount("/static", StaticFiles(directory="static"), name="static")
+app.mount(
+    "/static", StaticFiles(directory=os.path.join(base_dir, "static")), name="static"
+)
 
-# Set up templates - adjusted path for Vercel deployment
-templates = Jinja2Templates(directory="templates")
+# Set up templates with absolute path
+templates = Jinja2Templates(directory=os.path.join(base_dir, "templates"))
 
 
 # Basic health check endpoint
