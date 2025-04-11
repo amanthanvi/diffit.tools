@@ -1,14 +1,12 @@
 # diffit.tools
- 
-# Diffit Tools - README.md
 
 ## Overview
-Diffit Tools is a lightweight, free, and open-source online diff utility that allows users to compare text, files, and PDFs. The application provides an easy-to-use interface to generate visual diffs of user input and file content through a web-based interface.
+Diffit is a lightweight, free, and open-source online diff utility that allows users to compare text, files, and PDFs. The application provides an easy-to-use interface to generate visual diffs of user input and file content through a web-based interface.
 
-![Diffit Tools Screenshot](diffit_screenshot.png)
+![Diffit Screenshot](diffit_screenshot.png)
 
 ## Live Demo
-[Diffit Tools](https://diffit-tools.vercel.app)
+[Diffit](https://diffit.tools)
 
 ## Core Features
 - **Text Comparison:** Compare two blocks of text with side-by-side diff visualization
@@ -38,7 +36,7 @@ Diffit Tools is a lightweight, free, and open-source online diff utility that al
 ### Local Development
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/diffit-tools.git
+   git clone https://github.com/amanthanvi/diffit-tools.git
    cd diffit-tools
    ```
 
@@ -67,7 +65,7 @@ For production deployment, set the following environment variables:
 - `VERCEL`: Set to "1" for production
 
 ## Deployment
-Diffit Tools is optimized for deployment on Vercel:
+Diffit is optimized for deployment on Vercel:
 
 1. Create a Vercel account if you don't have one
 2. Install the Vercel CLI:
@@ -102,7 +100,7 @@ diffit-tools/
 ```
 
 ## Contributing
-Contributions to Diffit Tools are welcome! Please follow these steps:
+Contributions to Diffit are welcome! Please follow these steps:
 
 1. Fork the repository
 2. Create a feature branch: `git checkout -b feature-name`
