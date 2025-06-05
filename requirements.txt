@@ -18,7 +18,7 @@ Deprecated==1.2.18
 fastapi==0.104.1
 fonttools==4.56.0
 greenlet==3.1.1
-h11==0.14.0
+h11==0.16.0
 html2text==2024.2.26
 html5lib==1.1
 httpcore==1.0.7
