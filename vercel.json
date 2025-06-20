@@ -1,7 +1,7 @@
 {
-  "buildCommand": "pnpm turbo run build --filter=web",
-  "devCommand": "pnpm dev",
-  "installCommand": "npm install -g pnpm@8 && pnpm install",
+  "buildCommand": "npm run build",
+  "devCommand": "npm run dev",
+  "installCommand": "npm install",
   "framework": null,
   "outputDirectory": "apps/web/.next",
   "regions": ["iad1"],
