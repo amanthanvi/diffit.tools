@@ -1,8 +1,10 @@
 {
-  "buildCommand": "npm run build",
-  "devCommand": "npm run dev",
-  "installCommand": "npm install --legacy-peer-deps",
+  "buildCommand": "pnpm build",
+  "devCommand": "pnpm dev",
+  "installCommand": "pnpm install",
   "outputDirectory": "apps/web/.next",
+  "framework": "nextjs",
+  "rootDirectory": ".",
   "regions": ["iad1"],
   "headers": [
     {
