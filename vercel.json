@@ -4,7 +4,6 @@
   "installCommand": "pnpm install",
   "outputDirectory": "apps/web/.next",
   "framework": "nextjs",
-  "rootDirectory": ".",
   "regions": ["iad1"],
   "headers": [
     {
