@@ -5,10 +5,10 @@
   "description": "Diffit.tools v2.0 - Modern diff comparison platform",
   "author": "Diffit.tools Team",
   "license": "MIT",
-  "packageManager": "pnpm@8.15.1",
+  "packageManager": "pnpm@8.15.4",
   "engines": {
-    "node": ">=18.0.0",
-    "pnpm": ">=8.0.0"
+    "node": "20.x",
+    "pnpm": "8.x"
   },
   "scripts": {
     "build": "turbo run build",
