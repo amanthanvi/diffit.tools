@@ -1,153 +1,209 @@
 "use client";
 
 import { useCallback, useState } from "react";
-import { Upload, X } from "lucide-react";
-import { Button, useToast, cn } from "@diffit/ui";
-import { useDiffStore } from "@/stores/diff-store";
+import { Upload, FileText, Check, X, Loader2 } from "lucide-react";
+import { Button, useToast } from "@diffit/ui";
+import { cn } from "@/lib/utils";
+import { motion, AnimatePresence } from "framer-motion";
 
-export function FileUpload() {
-  const [isDragging, setIsDragging] = useState(false);
-  const [isUploading, setIsUploading] = useState(false);
-  const { setLeftContent, setRightContent } = useDiffStore();
+interface FileUploadProps {
+  onUpload: (content: string, file?: File) => void;
+  accept?: Record<string, string[]>;
+  maxSize?: number;
+  className?: string;
+  label?: string;
+}
+
+export function FileUpload({
+  onUpload,
+  accept = {
+    "text/*": [],
+    "application/json": [".json"],
+    "application/javascript": [".js"],
+    "application/typescript": [".ts", ".tsx"],
+    "application/x-python": [".py"],
+    "application/x-java": [".java"],
+    "application/xml": [".xml"],
+    "application/x-yaml": [".yaml", ".yml"],
+  },
+  maxSize = 10 * 1024 * 1024, // 10MB
+  className,
+  label = "Upload File",
+}: FileUploadProps) {
+  const [isLoading, setIsLoading] = useState(false);
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
 
   const handleFile = useCallback(
-    async (file: File, side: "left" | "right") => {
-      if (file.size > 10 * 1024 * 1024) {
-        toast({
-          title: "File too large",
-          description: "Maximum file size is 10MB",
-          variant: "destructive",
-        });
-        return;
-      }
+    async (file: File) => {
+      setError(null);
+      setIsLoading(true);
 
-      setIsUploading(true);
       try {
-        const formData = new FormData();
-        formData.append("file", file);
-        formData.append("type", getFileType(file));
+        if (file.size > maxSize) {
+          throw new Error(`File size must be less than ${maxSize / 1024 / 1024}MB`);
+        }
 
-        const response = await fetch("/api/upload", {
-          method: "POST",
-          body: formData,
+        // Read file content directly in browser
+        const reader = new FileReader();
+        const content = await new Promise<string>((resolve, reject) => {
+          reader.onload = (e) => resolve(e.target?.result as string);
+          reader.onerror = reject;
+          reader.readAsText(file);
         });
 
-        if (!response.ok) {
-          throw new Error("Upload failed");
-        }
-
-        const data = await response.json();
+        setUploadedFile(file);
+        onUpload(content, file);
         
-        if (side === "left") {
-          setLeftContent(data.content);
-        } else {
-          setRightContent(data.content);
-        }
-
         toast({
           title: "File uploaded",
           description: `${file.name} has been loaded`,
         });
-      } catch (error) {
+        
+        // Reset after a delay
+        setTimeout(() => {
+          setUploadedFile(null);
+        }, 3000);
+      } catch (err) {
+        const errorMsg = err instanceof Error ? err.message : "Failed to read file";
+        setError(errorMsg);
         toast({
           title: "Upload failed",
-          description: "Failed to process file",
+          description: errorMsg,
           variant: "destructive",
         });
       } finally {
-        setIsUploading(false);
+        setIsLoading(false);
       }
     },
-    [setLeftContent, setRightContent, toast]
+    [onUpload, maxSize, toast]
   );
 
-  const handleDrop = useCallback(
-    (e: React.DragEvent, side: "left" | "right") => {
-      e.preventDefault();
-      setIsDragging(false);
+  const handleClick = () => {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = Object.entries(accept)
+      .map(([type, exts]) => [type, ...exts])
+      .flat()
+      .join(",");
+    input.onchange = (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (file) handleFile(file);
+    };
+    input.click();
+  };
 
+  const handleDrop = useCallback(
+    (e: React.DragEvent) => {
+      e.preventDefault();
       const file = e.dataTransfer.files[0];
-      if (file) {
-        handleFile(file, side);
-      }
+      if (file) handleFile(file);
     },
     [handleFile]
   );
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
-    setIsDragging(true);
   };
 
-  const handleDragLeave = () => {
-    setIsDragging(false);
-  };
-
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>, side: "left" | "right") => {
-    const file = e.target.files?.[0];
-    if (file) {
-      handleFile(file, side);
-    }
-  };
+  if (label !== "Upload File") {
+    // Compact mode for toolbar
+    return (
+      <Button
+        variant="ghost"
+        size="icon"
+        onClick={handleClick}
+        disabled={isLoading}
+        className={cn("h-8 w-8", className)}
+        title={label}
+      >
+        {isLoading ? (
+          <Loader2 className="h-4 w-4 animate-spin" />
+        ) : uploadedFile ? (
+          <Check className="h-4 w-4 text-green-500" />
+        ) : (
+          <Upload className="h-4 w-4" />
+        )}
+      </Button>
+    );
+  }
 
   return (
-    <div className="absolute bottom-4 right-4 z-10">
-      <div
-        className={cn(
-          "rounded-lg border-2 border-dashed p-4 transition-all",
-          isDragging
-            ? "border-primary bg-primary/10"
-            : "border-muted-foreground/25 bg-background/95 backdrop-blur"
-        )}
-        onDragOver={handleDragOver}
-        onDragLeave={handleDragLeave}
-      >
-        {isDragging ? (
-          <div className="flex items-center gap-4">
-            <div
-              className="flex-1 p-8 text-center"
-              onDrop={(e) => handleDrop(e, "left")}
-            >
-              <Upload className="mx-auto h-8 w-8 text-primary" />
-              <p className="mt-2 text-sm font-medium">Drop for left side</p>
+    <div
+      onDrop={handleDrop}
+      onDragOver={handleDragOver}
+      onClick={handleClick}
+      className={cn(
+        "relative flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-700 p-8 text-center transition-all hover:border-blue-500 dark:hover:border-blue-500 hover:bg-blue-50/50 dark:hover:bg-blue-950/20",
+        isLoading && "pointer-events-none opacity-50",
+        className
+      )}
+    >
+      <AnimatePresence mode="wait">
+        {isLoading ? (
+          <motion.div
+            key="loading"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            className="flex flex-col items-center"
+          >
+            <Loader2 className="mb-4 h-8 w-8 animate-spin text-blue-500" />
+            <p className="text-sm font-medium">Reading file...</p>
+          </motion.div>
+        ) : uploadedFile ? (
+          <motion.div
+            key="success"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            className="flex flex-col items-center"
+          >
+            <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-green-100 dark:bg-green-900">
+              <Check className="h-6 w-6 text-green-600 dark:text-green-400" />
             </div>
-            <div className="w-px h-24 bg-border" />
-            <div
-              className="flex-1 p-8 text-center"
-              onDrop={(e) => handleDrop(e, "right")}
-            >
-              <Upload className="mx-auto h-8 w-8 text-primary" />
-              <p className="mt-2 text-sm font-medium">Drop for right side</p>
-            </div>
-          </div>
-        ) : (
-          <div className="flex items-center gap-2">
-            <Upload className="h-4 w-4 text-muted-foreground" />
-            <p className="text-sm text-muted-foreground">
-              Drag files here or
+            <p className="text-sm font-medium">File uploaded!</p>
+            <p className="text-xs text-gray-600 dark:text-gray-400">
+              {uploadedFile.name}
             </p>
-            <label htmlFor="file-upload-left">
-              <Button
-                variant="link"
-                size="sm"
-                className="h-auto p-0"
-                disabled={isUploading}
-                asChild
-              >
-                <span>browse</span>
-              </Button>
-            </label>
-            <input
-              id="file-upload-left"
-              type="file"
-              className="hidden"
-              onChange={(e) => handleFileSelect(e, "left")}
-              accept=".txt,.js,.ts,.jsx,.tsx,.py,.java,.cpp,.cs,.go,.rs,.rb,.php,.swift,.kt,.sql,.html,.css,.json,.yaml,.yml,.md,.xml"
-            />
-          </div>
+          </motion.div>
+        ) : error ? (
+          <motion.div
+            key="error"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            className="flex flex-col items-center"
+          >
+            <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-red-100 dark:bg-red-900">
+              <X className="h-6 w-6 text-red-600 dark:text-red-400" />
+            </div>
+            <p className="text-sm font-medium text-red-600 dark:text-red-400">Error</p>
+            <p className="text-xs text-gray-600 dark:text-gray-400">{error}</p>
+          </motion.div>
+        ) : (
+          <motion.div
+            key="idle"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="flex flex-col items-center"
+          >
+            <Upload className="mb-4 h-8 w-8 text-gray-400" />
+            <p className="mb-2 text-sm font-medium">
+              Drag & drop a file here
+            </p>
+            <p className="text-xs text-gray-600 dark:text-gray-400">or</p>
+            <Button variant="outline" size="sm" className="mt-2">
+              Browse Files
+            </Button>
+            <p className="mt-4 text-xs text-gray-600 dark:text-gray-400">
+              Supports text files up to 10MB
+            </p>
+          </motion.div>
         )}
-      </div>
+      </AnimatePresence>
     </div>
   );
 }

@@ -1,6 +1,7 @@
 // Core Components
 export * from './components/button';
 export * from './components/avatar';
+export * from './components/badge';
 export * from './components/card';
 export * from './components/checkbox';
 export * from './components/dialog';
@@ -15,6 +16,7 @@ export * from './components/select';
 export * from './components/separator';
 export * from './components/slider';
 export * from './components/tabs';
+export * from './components/toggle-group';
 export * from './components/radio-group';
 export * from './components/scroll-area';
 
