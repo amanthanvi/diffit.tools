@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "@diffit/ui";
-import { AppCommandPalette } from "@/components/command-palette";
+import { CommandPalette } from "@/components/command-palette";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { MobileNav } from "@/components/layout/mobile-nav";
 import { FileText } from "lucide-react";
@@ -46,7 +46,7 @@ export function Header() {
         </nav>
 
         <div className="flex flex-1 items-center justify-end space-x-4">
-          <AppCommandPalette />
+          <CommandPalette />
           <ThemeToggle />
           <Link href="/settings">
             <Button variant="ghost" size="sm">

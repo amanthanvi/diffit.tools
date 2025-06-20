@@ -244,8 +244,8 @@ export default function HomePage() {
                   <div className="absolute inset-0 bg-gradient-to-br opacity-0 group-hover:opacity-10 transition-opacity"
                     style={{
                       backgroundImage: `linear-gradient(to bottom right, var(--tw-gradient-stops))`,
-                      '--tw-gradient-from': feature.gradient.split(' ')[1],
-                      '--tw-gradient-to': feature.gradient.split(' ')[3],
+                      '--tw-gradient-from': feature.gradient ? feature.gradient.split(' ')[1] || '' : '',
+                      '--tw-gradient-to': feature.gradient ? feature.gradient.split(' ')[3] || '' : '',
                     } as any}
                   />
                   
