@@ -132,17 +132,9 @@ export const SortOrderSchema = z.enum(['asc', 'desc']).default('desc');
 /**
  * File type validation
  */
-export const TextFileTypeSchema = z.string()
-  .refine(
-    (mimeType) => SUPPORTED_FILE_TYPES.TEXT.includes(mimeType),
-    'Unsupported text file type'
-  );
+export const TextFileTypeSchema = z.enum(SUPPORTED_FILE_TYPES.TEXT);
 
-export const CodeFileExtensionSchema = z.string()
-  .refine(
-    (ext) => SUPPORTED_FILE_TYPES.CODE.includes(ext),
-    'Unsupported code file extension'
-  );
+export const CodeFileExtensionSchema = z.enum(SUPPORTED_FILE_TYPES.CODE);
 
 /**
  * Environment variable schemas

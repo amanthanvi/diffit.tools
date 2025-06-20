@@ -1,11 +1,8 @@
 "use client";
 
-import { Card } from "@diffit/ui/card";
-import { Label } from "@diffit/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@diffit/ui/select";
-import { RadioGroup, RadioGroupItem } from "@diffit/ui/radio-group";
-import { Button } from "@diffit/ui/button";
-import { Separator } from "@diffit/ui/separator";
+export const dynamic = 'force-dynamic';
+
+import { Card, Label, Select, SelectContent, SelectItem, SelectTrigger, SelectValue, RadioGroup, RadioGroupItem, Button, Separator } from "@diffit/ui";
 import { useTheme } from "next-themes";
 import { useDiffStore } from "@/stores/diff-store";
 import { useRecentDiffsStore } from "@/stores/recent-diffs-store";

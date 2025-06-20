@@ -1,12 +1,12 @@
 export { appRouter } from './router';
 export type { AppRouter } from './router';
 export { createContext } from './context';
-export type { Context } from './types';
+export type { Context } from './context';
 
 // Export utilities for server implementation
-export { WebSocketHandler, broadcastToRoom, sendToUser } from './utils/websocket';
+export { WebSocketManager, broadcastToDiff, getActiveDiffUsers } from './utils/websocket';
 export { handleFileUpload, validateFile, getFileUrl } from './utils/upload';
-export { queueWebhookEvent } from './routers/webhook';
+export { triggerWebhookEvent } from './routers/webhook';
 
 // Export types
 export type {
@@ -44,4 +44,4 @@ export {
 
 // Re-export tRPC utilities for server setup
 export { createHTTPHandler } from '@trpc/server/adapters/standalone';
-export { createWSHandler } from '@trpc/server/adapters/ws';
+export { applyWSSHandler } from '@trpc/server/adapters/ws';

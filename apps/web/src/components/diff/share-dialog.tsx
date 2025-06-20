@@ -8,12 +8,15 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@diffit/ui/dialog";
-import { Button } from "@diffit/ui/button";
-import { Input } from "@diffit/ui/input";
-import { Label } from "@diffit/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@diffit/ui/tabs";
-import { useToast } from "@diffit/ui/use-toast";
+  Button,
+  Input,
+  Label,
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+  useToast
+} from "@diffit/ui";
 
 interface ShareDialogProps {
   open: boolean;

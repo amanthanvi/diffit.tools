@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
-export const runtime = "edge";
+// Removed edge runtime due to Node.js API dependencies
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 

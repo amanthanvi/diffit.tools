@@ -1,50 +1,11 @@
 import { z } from 'zod';
 import { 
-  User, 
-  UserPlan, 
-  UserRole,
   Diff,
   DiffVisibility,
   Collection,
   Comment,
   CommentStatus,
-  Subscription,
-  SubscriptionStatus,
 } from '../';
-
-/**
- * Type guard for User objects
- */
-export function isUser(value: unknown): value is User {
-  return (
-    typeof value === 'object' &&
-    value !== null &&
-    'id' in value &&
-    'email' in value &&
-    'plan' in value &&
-    'preferences' in value
-  );
-}
-
-/**
- * Type guard for UserPlan
- */
-export function isUserPlan(value: unknown): value is UserPlan {
-  return (
-    typeof value === 'string' &&
-    ['free', 'pro', 'team', 'enterprise'].includes(value)
-  );
-}
-
-/**
- * Type guard for UserRole
- */
-export function isUserRole(value: unknown): value is UserRole {
-  return (
-    typeof value === 'string' &&
-    ['owner', 'admin', 'member', 'viewer'].includes(value)
-  );
-}
 
 /**
  * Type guard for Diff objects
@@ -106,40 +67,6 @@ export function isCommentStatus(value: unknown): value is CommentStatus {
   return (
     typeof value === 'string' &&
     ['active', 'deleted', 'hidden', 'flagged'].includes(value)
-  );
-}
-
-/**
- * Type guard for Subscription objects
- */
-export function isSubscription(value: unknown): value is Subscription {
-  return (
-    typeof value === 'object' &&
-    value !== null &&
-    'id' in value &&
-    'userId' in value &&
-    'status' in value &&
-    'plan' in value &&
-    'priceId' in value
-  );
-}
-
-/**
- * Type guard for SubscriptionStatus
- */
-export function isSubscriptionStatus(value: unknown): value is SubscriptionStatus {
-  return (
-    typeof value === 'string' &&
-    [
-      'active',
-      'trialing',
-      'past_due',
-      'canceled',
-      'incomplete',
-      'incomplete_expired',
-      'unpaid',
-      'paused',
-    ].includes(value)
   );
 }
 

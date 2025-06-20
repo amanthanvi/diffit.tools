@@ -1,9 +1,10 @@
 import { z } from 'zod';
 import type { Diff, Collection, Comment, Usage } from '@diffit/db';
+import type { db } from '@diffit/db';
 
 // Context types
 export interface Context {
-  db: typeof import('@diffit/db').db;
+  db: typeof db;
   req: Request;
   res: Response;
   redis?: RedisClient;
@@ -30,9 +31,11 @@ export interface RateLimitConfig {
 
 // WebSocket types
 export interface WSMessage {
-  type: 'diff-update' | 'comment-added' | 'user-joined' | 'user-left';
+  type: 'join' | 'leave' | 'cursor' | 'selection' | 'ping' | 'pong' | 
+        'user_joined' | 'user_left' | 'room_state' | 'cursor_update' | 
+        'selection_update' | 'diff-update' | 'comment-added';
   data: any;
-  room: string;
+  room?: string;
   userId?: string;
 }
 

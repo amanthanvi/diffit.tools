@@ -1,14 +1,10 @@
 "use client";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { httpBatchLink, loggerLink } from "@trpc/client";
-import { createTRPCReact } from "@trpc/react-query";
 import { useState } from "react";
 import superjson from "superjson";
-import type { AppRouter } from "@diffit/api";
-
-export const trpc = createTRPCReact<AppRouter>();
+import { trpc } from "@/lib/trpc";
 
 function getBaseUrl() {
   if (typeof window !== "undefined") return "";
@@ -39,12 +35,12 @@ export function TRPCProvider({ children }: { children: React.ReactNode }) {
         }),
         httpBatchLink({
           url: `${getBaseUrl()}/api/trpc`,
-          transformer: superjson,
           headers() {
             return {
               "x-trpc-source": "nextjs-react",
             };
           },
+          transformer: superjson,
         }),
       ],
     })
@@ -54,7 +50,6 @@ export function TRPCProvider({ children }: { children: React.ReactNode }) {
     <trpc.Provider client={trpcClient} queryClient={queryClient}>
       <QueryClientProvider client={queryClient}>
         {children}
-        {process.env.NODE_ENV === "development" && <ReactQueryDevtools />}
       </QueryClientProvider>
     </trpc.Provider>
   );

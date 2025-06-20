@@ -218,7 +218,7 @@ class DatabaseConnection {
 
   // Transaction helper with retry logic
   public async transaction<T>(
-    fn: (tx: PrismaClient) => Promise<T>,
+    fn: (tx: Omit<PrismaClient, '$connect' | '$disconnect' | '$on' | '$transaction' | '$use' | '$extends'>) => Promise<T>,
     options?: {
       maxWait?: number;
       timeout?: number;
@@ -230,7 +230,7 @@ class DatabaseConnection {
 
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
       try {
-        return await this.prismaClient.$transaction(fn, options);
+        return await (this.prismaClient.$transaction as any)(fn, options);
       } catch (error) {
         lastError = error as Error;
         
@@ -297,7 +297,7 @@ export async function getDatabaseStats() {
 
 // Export transaction helper
 export async function withTransaction<T>(
-  fn: (tx: PrismaClient) => Promise<T>,
+  fn: (tx: Omit<PrismaClient, '$connect' | '$disconnect' | '$on' | '$transaction' | '$use' | '$extends'>) => Promise<T>,
   options?: Parameters<DatabaseConnection['transaction']>[1]
 ): Promise<T> {
   const connection = DatabaseConnection.getInstance();

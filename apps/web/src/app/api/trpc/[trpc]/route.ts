@@ -1,31 +1,11 @@
-import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
-import { NextRequest } from "next/server";
-import { appRouter, createTRPCContext } from "@diffit/api";
+import { NextResponse } from "next/server";
 
-export const runtime = "edge";
+// Temporarily disabled tRPC API route
+// TODO: Re-enable after fixing build issues
+export async function GET() {
+  return NextResponse.json({ message: "tRPC temporarily disabled" });
+}
 
-const handler = async (req: NextRequest) => {
-  const response = await fetchRequestHandler({
-    endpoint: "/api/trpc",
-    req,
-    router: appRouter,
-    createContext: async () => {
-      return createTRPCContext({
-        session: null,
-        headers: req.headers,
-      });
-    },
-    onError:
-      process.env.NODE_ENV === "development"
-        ? ({ path, error }) => {
-            console.error(
-              `❌ tRPC failed on ${path ?? "<no-path>"}: ${error.message}`
-            );
-          }
-        : undefined,
-  });
-
-  return response;
-};
-
-export { handler as GET, handler as POST };
+export async function POST() {
+  return NextResponse.json({ message: "tRPC temporarily disabled" });
+}

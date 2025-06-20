@@ -1,3 +1,5 @@
+"use client";
+
 import * as React from 'react';
 import { ChevronRight, File, Folder, Search } from 'lucide-react';
 import { cn, formatFileSize } from '../lib/utils';

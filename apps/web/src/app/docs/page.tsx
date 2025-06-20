@@ -1,126 +1,56 @@
-import { Metadata } from "next";
-import Link from "next/link";
-import { Book, Code, Zap, Shield } from "lucide-react";
-import { Card } from "@diffit/ui/card";
-import { Header } from "@/components/layout/header";
-import { Footer } from "@/components/layout/footer";
-
-export const metadata: Metadata = {
-  title: "Documentation",
-  description: "Learn how to use Diffit's features and API",
-};
-
-const sections = [
-  {
-    title: "Getting Started",
-    icon: Book,
-    description: "Learn the basics of using Diffit",
-    links: [
-      { title: "Quick Start", href: "/docs/quickstart" },
-      { title: "Installation", href: "/docs/installation" },
-      { title: "Basic Usage", href: "/docs/basic-usage" },
-    ],
-  },
-  {
-    title: "API Reference",
-    icon: Code,
-    description: "Integrate Diffit into your applications",
-    links: [
-      { title: "Authentication", href: "/docs/api/auth" },
-      { title: "Endpoints", href: "/docs/api/endpoints" },
-      { title: "SDKs", href: "/docs/api/sdks" },
-    ],
-  },
-  {
-    title: "Features",
-    icon: Zap,
-    description: "Explore advanced features",
-    links: [
-      { title: "Real-time Collaboration", href: "/docs/features/collaboration" },
-      { title: "Export Options", href: "/docs/features/export" },
-      { title: "Keyboard Shortcuts", href: "/docs/features/shortcuts" },
-    ],
-  },
-  {
-    title: "Security",
-    icon: Shield,
-    description: "Learn about our security practices",
-    links: [
-      { title: "Data Protection", href: "/docs/security/data" },
-      { title: "Encryption", href: "/docs/security/encryption" },
-      { title: "Compliance", href: "/docs/security/compliance" },
-    ],
-  },
-];
+import { SimpleFooter } from "@/components/layout/simple-footer";
+import { SimpleHeader } from "@/components/layout/simple-header";
 
 export default function DocsPage() {
   return (
-    <>
-      <Header />
-      <main className="min-h-screen">
-        <div className="container mx-auto px-4 py-16">
-          <div className="mx-auto max-w-4xl">
-            <h1 className="text-4xl font-bold tracking-tight mb-4">
-              Documentation
-            </h1>
-            <p className="text-lg text-muted-foreground mb-12">
-              Everything you need to know about using Diffit
-            </p>
-
-            <div className="grid gap-8 md:grid-cols-2">
-              {sections.map((section) => (
-                <Card key={section.title} className="p-6">
-                  <div className="flex items-start gap-4">
-                    <section.icon className="h-8 w-8 text-primary flex-shrink-0" />
-                    <div className="flex-1">
-                      <h2 className="text-xl font-semibold mb-2">
-                        {section.title}
-                      </h2>
-                      <p className="text-muted-foreground mb-4">
-                        {section.description}
-                      </p>
-                      <ul className="space-y-2">
-                        {section.links.map((link) => (
-                          <li key={link.href}>
-                            <Link
-                              href={link.href}
-                              className="text-primary hover:underline"
-                            >
-                              {link.title} →
-                            </Link>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
-                </Card>
-              ))}
-            </div>
-
-            <div className="mt-12 p-6 bg-muted rounded-lg">
-              <h3 className="text-lg font-semibold mb-2">Need more help?</h3>
-              <p className="text-muted-foreground mb-4">
-                Can't find what you're looking for? We're here to help.
+    <div className="flex min-h-screen flex-col">
+      <SimpleHeader />
+      <main className="flex-1">
+        <div className="container mx-auto py-16 px-4">
+          <div className="max-w-4xl mx-auto">
+            <h1 className="text-4xl font-bold mb-8">Documentation</h1>
+            
+            <div className="prose prose-lg max-w-none">
+              <h2 className="text-2xl font-semibold mb-4">Getting Started</h2>
+              <p className="text-gray-600 mb-6">
+                Diffit is a powerful text comparison tool that helps you identify differences 
+                between two pieces of text quickly and accurately.
               </p>
-              <div className="flex gap-4">
-                <Link
-                  href="/support"
-                  className="text-primary hover:underline"
-                >
-                  Contact Support →
-                </Link>
-                <Link
-                  href="https://github.com/diffit/diffit"
-                  className="text-primary hover:underline"
-                >
-                  GitHub Issues →
-                </Link>
-              </div>
+
+              <h3 className="text-xl font-semibold mb-3">How to Use</h3>
+              <ol className="list-decimal list-inside space-y-2 text-gray-600 mb-6">
+                <li>Navigate to the <a href="/diff" className="text-blue-600 hover:underline">Diff page</a></li>
+                <li>Paste or type your original text in the left panel</li>
+                <li>Paste or type your modified text in the right panel</li>
+                <li>Click &quot;Compare&quot; to see the differences</li>
+                <li>Use &quot;Clear&quot; to reset both panels</li>
+              </ol>
+
+              <h3 className="text-xl font-semibold mb-3">Features</h3>
+              <ul className="list-disc list-inside space-y-2 text-gray-600 mb-6">
+                <li>Real-time text comparison</li>
+                <li>Clean, easy-to-read diff visualization</li>
+                <li>Responsive design that works on all devices</li>
+                <li>Fast and secure - all processing happens in your browser</li>
+              </ul>
+
+              <h3 className="text-xl font-semibold mb-3">Tips</h3>
+              <ul className="list-disc list-inside space-y-2 text-gray-600 mb-6">
+                <li>For best results, format your text consistently before comparing</li>
+                <li>The tool works with any type of text content</li>
+                <li>Your data never leaves your browser, ensuring complete privacy</li>
+              </ul>
+
+              <h2 className="text-2xl font-semibold mb-4">Support</h2>
+              <p className="text-gray-600">
+                If you encounter any issues or have suggestions for improvement, 
+                please feel free to reach out through our GitHub repository.
+              </p>
             </div>
           </div>
         </div>
       </main>
-      <Footer />
-    </>
+      <SimpleFooter />
+    </div>
   );
 }

@@ -1,9 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "@diffit/ui/button";
-import { Card } from "@diffit/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@diffit/ui/tabs";
+import { Button, Card, Tabs, TabsContent, TabsList, TabsTrigger } from "@diffit/ui";
 
 const demoContent = {
   javascript: {

@@ -4,8 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
-import { Button } from "@diffit/ui/button";
-import { cn } from "@diffit/ui/lib/utils";
+import { Button, cn } from "@diffit/ui";
 
 const navigation = [
   { name: "Home", href: "/" },

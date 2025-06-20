@@ -74,8 +74,6 @@ export function collectRequestMetrics(
     method: ctx.req.method,
     duration,
     status: error ? 'error' : 'success',
-    userId: ctx.user?.id,
-    apiKeyId: ctx.apiKey?.id,
   };
   
   if (error && error instanceof Error && 'code' in error) {
@@ -129,7 +127,8 @@ export async function performHealthCheck(ctx: Context): Promise<HealthCheckResul
   
   // Check database
   try {
-    await ctx.db.$queryRaw`SELECT 1`;
+    // Simple health check - try to query diffs
+    await ctx.db.diff.findPublic(1);
     checks.database = true;
   } catch (error) {
     console.error('Database health check failed:', error);

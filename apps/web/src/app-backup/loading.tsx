@@ -1,4 +1,4 @@
-import { Skeleton } from "@diffit/ui/skeleton";
+import { Skeleton } from "@diffit/ui";
 
 export default function Loading() {
   return (

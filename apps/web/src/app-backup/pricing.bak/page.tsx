@@ -1,7 +1,8 @@
+export const dynamic = 'force-dynamic';
+
 import { Metadata } from "next";
 import { Check } from "lucide-react";
-import { Button } from "@diffit/ui/button";
-import { Card } from "@diffit/ui/card";
+import { Button, Card } from "@diffit/ui";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 

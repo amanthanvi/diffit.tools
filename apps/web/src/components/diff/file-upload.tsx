@@ -2,9 +2,7 @@
 
 import { useCallback, useState } from "react";
 import { Upload, X } from "lucide-react";
-import { Button } from "@diffit/ui/button";
-import { useToast } from "@diffit/ui/use-toast";
-import { cn } from "@diffit/ui/lib/utils";
+import { Button, useToast, cn } from "@diffit/ui";
 import { useDiffStore } from "@/stores/diff-store";
 
 export function FileUpload() {

@@ -8,4 +8,5 @@ export default defineConfig({
   external: ['react', 'react-dom'],
   sourcemap: true,
   minify: process.env.NODE_ENV === 'production',
+  onSuccess: 'cp src/styles/globals.css dist/styles.css',
 });

@@ -11,15 +11,19 @@ import {
   Undo,
   Redo,
 } from "lucide-react";
-import { Button } from "@diffit/ui/button";
-import {
+import { 
+  Button,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@diffit/ui/dropdown-menu";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@diffit/ui/select";
-import { Separator } from "@diffit/ui/separator";
+  Select, 
+  SelectContent, 
+  SelectItem, 
+  SelectTrigger, 
+  SelectValue,
+  Separator
+} from "@diffit/ui";
 import { useDiffStore } from "@/stores/diff-store";
 import { ExportDialog } from "@/components/diff/export-dialog";
 import { ShareDialog } from "@/components/diff/share-dialog";

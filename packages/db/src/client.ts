@@ -20,273 +20,142 @@ if (process.env.NODE_ENV !== 'production') {
 
 // Typed helpers for common queries
 export const db = {
-  // User helpers
-  user: {
-    findByClerkId: (clerkId: string) =>
-      prisma.user.findUnique({
-        where: { clerkId },
-        include: {
-          apiKeys: {
-            where: { status: 'ACTIVE' },
-          },
-        },
-      }),
-    
-    findByEmail: (email: string) =>
-      prisma.user.findUnique({
-        where: { email },
-      }),
-    
-    updateLastActive: (userId: string) =>
-      prisma.user.update({
-        where: { id: userId },
-        data: { lastActiveAt: new Date() },
-      }),
-    
-    getUsageStats: (userId: string, startDate?: Date) =>
-      prisma.usage.groupBy({
-        by: ['type'],
-        where: {
-          userId,
-          createdAt: startDate ? { gte: startDate } : undefined,
-        },
-        _count: true,
-      }),
-  },
-  
   // Diff helpers
   diff: {
+    findById: (id: string) =>
+      prisma.diff.findUnique({
+        where: { id },
+        include: {
+          comments: {
+            orderBy: { createdAt: 'desc' },
+          },
+          collection: true,
+          files: true,
+        },
+      }),
+    
     findBySlug: (slug: string) =>
       prisma.diff.findUnique({
         where: { slug },
         include: {
-          user: {
-            select: {
-              id: true,
-              username: true,
-              displayName: true,
-              avatarUrl: true,
-            },
-          },
-          files: true,
-          analytics: true,
-          _count: {
-            select: { comments: true },
+          comments: {
+            orderBy: { createdAt: 'desc' },
           },
         },
       }),
     
-    incrementViewCount: async (diffId: string) => {
-      const [diff, analytics] = await prisma.$transaction([
-        prisma.diff.update({
-          where: { id: diffId },
-          data: { viewCount: { increment: 1 } },
-        }),
-        prisma.diffAnalytics.upsert({
-          where: { diffId },
-          create: {
-            diffId,
-            totalViews: 1,
-            uniqueViews: 1,
-            lastViewedAt: new Date(),
-          },
-          update: {
-            totalViews: { increment: 1 },
-            lastViewedAt: new Date(),
-          },
-        }),
-      ]);
-      
-      return { diff, analytics };
-    },
-    
-    findPublicDiffs: (options?: {
-      limit?: number;
-      offset?: number;
-      type?: string;
-      search?: string;
-    }) => {
-      const { limit = 20, offset = 0, type, search } = options || {};
-      
-      return prisma.diff.findMany({
+    findPublic: (limit = 10) =>
+      prisma.diff.findMany({
         where: {
           visibility: 'PUBLIC',
-          status: 'ACTIVE',
-          type: type as any,
-          OR: search
-            ? [
-                { title: { contains: search, mode: 'insensitive' } },
-                { description: { contains: search, mode: 'insensitive' } },
-              ]
-            : undefined,
-        },
-        include: {
-          user: {
-            select: {
-              username: true,
-              displayName: true,
-              avatarUrl: true,
-            },
-          },
-          _count: {
-            select: { comments: true },
-          },
         },
         orderBy: { createdAt: 'desc' },
         take: limit,
-        skip: offset,
-      });
-    },
+      }),
     
-    cleanupExpired: () =>
-      prisma.diff.updateMany({
-        where: {
-          expiresAt: { lte: new Date() },
-          status: 'ACTIVE',
+    incrementViews: (id: string) =>
+      prisma.diff.update({
+        where: { id },
+        data: {
+          viewCount: { increment: 1 },
         },
-        data: { status: 'EXPIRED' },
+      }),
+    
+    search: (query: string, limit = 20) =>
+      prisma.diff.findMany({
+        where: {
+          OR: [
+            { title: { contains: query, mode: 'insensitive' } },
+            { description: { contains: query, mode: 'insensitive' } },
+          ],
+          visibility: 'PUBLIC',
+        },
+        orderBy: { createdAt: 'desc' },
+        take: limit,
       }),
   },
   
   // Collection helpers
   collection: {
+    findById: (id: string) =>
+      prisma.collection.findUnique({
+        where: { id },
+        include: {
+          diffs: {
+            orderBy: {
+              createdAt: 'desc',
+            },
+          },
+        },
+      }),
+    
     findBySlug: (slug: string) =>
       prisma.collection.findUnique({
         where: { slug },
         include: {
-          user: {
-            select: {
-              username: true,
-              displayName: true,
-              avatarUrl: true,
-            },
-          },
           diffs: {
-            where: { status: 'ACTIVE' },
-            include: {
-              _count: {
-                select: { comments: true },
-              },
+            orderBy: {
+              createdAt: 'desc',
             },
-            orderBy: { createdAt: 'desc' },
-          },
-          _count: {
-            select: { diffs: true },
           },
         },
       }),
     
-    findUserCollections: (userId: string) =>
+    findPublic: (limit = 10) =>
       prisma.collection.findMany({
-        where: { userId },
-        include: {
-          _count: {
-            select: { diffs: true },
-          },
+        where: {
+          isPublic: true,
         },
-        orderBy: { updatedAt: 'desc' },
+        orderBy: { createdAt: 'desc' },
+        take: limit,
       }),
   },
   
-  // API Key helpers
-  apiKey: {
-    validate: async (key: string) => {
-      const apiKey = await prisma.apiKey.findUnique({
-        where: { key, status: 'ACTIVE' },
-        include: { user: true },
-      });
-      
-      if (!apiKey) return null;
-      
-      // Check expiration
-      if (apiKey.expiresAt && apiKey.expiresAt < new Date()) {
-        await prisma.apiKey.update({
-          where: { id: apiKey.id },
-          data: { status: 'EXPIRED' },
-        });
-        return null;
-      }
-      
-      // Update last used
-      await prisma.apiKey.update({
-        where: { id: apiKey.id },
-        data: { lastUsedAt: new Date() },
-      });
-      
-      return apiKey;
-    },
+  // Comment helpers
+  comment: {
+    findByDiff: (diffId: string) =>
+      prisma.comment.findMany({
+        where: { diffId },
+        orderBy: { createdAt: 'desc' },
+      }),
     
-    checkRateLimit: async (apiKeyId: string) => {
-      const hourAgo = new Date(Date.now() - 60 * 60 * 1000);
-      const usageCount = await prisma.usage.count({
-        where: {
-          apiKeyId,
-          type: 'API_CALL',
-          createdAt: { gte: hourAgo },
+    create: (data: {
+      diffId: string;
+      authorName?: string;
+      content: string;
+      lineNumber?: number;
+      side?: string;
+    }) =>
+      prisma.comment.create({
+        data: {
+          ...data,
+          status: 'ACTIVE',
         },
-      });
-      
-      const apiKey = await prisma.apiKey.findUnique({
-        where: { id: apiKeyId },
-        select: { rateLimitPerHour: true },
-      });
-      
-      return {
-        used: usageCount,
-        limit: apiKey?.rateLimitPerHour || 100,
-        remaining: Math.max(0, (apiKey?.rateLimitPerHour || 100) - usageCount),
-      };
-    },
+      }),
   },
   
-  // Usage tracking helpers
+  // Usage helpers
   usage: {
     track: (data: {
-      userId?: string;
-      apiKeyId?: string;
-      type: string;
+      type: 'DIFF_CREATE' | 'DIFF_VIEW' | 'API_CALL' | 'FILE_UPLOAD' | 'EXPORT' | 'SHARE';
       metadata?: any;
       ipAddress?: string;
       userAgent?: string;
     }) =>
       prisma.usage.create({
-        data: {
-          ...data,
-          type: data.type as any,
-        },
+        data,
       }),
     
-    getMonthlyStats: async (userId: string) => {
-      const startOfMonth = new Date();
-      startOfMonth.setDate(1);
-      startOfMonth.setHours(0, 0, 0, 0);
-      
-      const stats = await prisma.usage.groupBy({
+    getStats: (startDate?: Date) =>
+      prisma.usage.groupBy({
         by: ['type'],
-        where: {
-          userId,
-          createdAt: { gte: startOfMonth },
-        },
+        where: startDate ? {
+          createdAt: { gte: startDate },
+        } : undefined,
         _count: true,
-      });
-      
-      const user = await prisma.user.findUnique({
-        where: { id: userId },
-        select: { maxDiffsPerMonth: true },
-      });
-      
-      const diffCount = stats.find(s => s.type === 'DIFF_CREATE')?._count || 0;
-      
-      return {
-        diffsCreated: diffCount,
-        diffsRemaining: user?.maxDiffsPerMonth === -1 
-          ? Infinity 
-          : Math.max(0, (user?.maxDiffsPerMonth || 100) - diffCount),
-        breakdown: stats,
-      };
-    },
+      }),
   },
 };
 
 // Export types
-export type * from '@prisma/client';
+export type { Diff, Collection, Comment, Usage } from '@prisma/client';

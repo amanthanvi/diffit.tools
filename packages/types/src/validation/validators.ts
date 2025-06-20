@@ -6,22 +6,21 @@ import {
   REGEX,
   SUPPORTED_FILE_TYPES,
 } from '../constants';
-import { UserPlan } from '../user';
 import { DiffContentType } from '../diff';
 
 /**
- * Validate file size against plan limits
+ * Validate file size against limits
  */
 export function validateFileSize(
-  size: number,
-  plan: UserPlan
+  size: number
 ): { valid: boolean; error?: string } {
-  const limit = PLAN_LIMITS[plan.toUpperCase() as keyof typeof PLAN_LIMITS].maxFileSize;
+  // Use FREE tier limit as default since there's no authentication
+  const limit = FILE_SIZE_LIMITS.MAX_FILE_SIZE_FREE;
   
   if (size > limit) {
     return {
       valid: false,
-      error: `File size exceeds limit of ${formatBytes(limit)} for ${plan} plan`,
+      error: `File size exceeds limit of ${formatBytes(limit)}`,
     };
   }
   
@@ -60,14 +59,14 @@ export function validateFileType(
   filename?: string
 ): { valid: boolean; error?: string; contentType?: DiffContentType } {
   // Check if it's a supported text MIME type
-  if (SUPPORTED_FILE_TYPES.TEXT.includes(mimeType)) {
+  if (SUPPORTED_FILE_TYPES.TEXT.includes(mimeType as any)) {
     return { valid: true, contentType: 'text' };
   }
   
   // Check by file extension if filename is provided
   if (filename) {
     const ext = filename.toLowerCase().match(/\.[^.]+$/)?.[0];
-    if (ext && SUPPORTED_FILE_TYPES.CODE.includes(ext)) {
+    if (ext && SUPPORTED_FILE_TYPES.CODE.includes(ext as any)) {
       return { valid: true, contentType: 'code' };
     }
   }
@@ -96,11 +95,11 @@ export function validateFileType(
  */
 export function validateRateLimit(
   requestCount: number,
-  plan: UserPlan,
-  limitType: keyof typeof RATE_LIMITS.FREE = 'DEFAULT'
+  limitType: keyof typeof RATE_LIMITS.ANONYMOUS = 'DEFAULT'
 ): { valid: boolean; error?: string; retryAfter?: number } {
-  const limits = RATE_LIMITS[plan.toUpperCase() as keyof typeof RATE_LIMITS];
-  const limit = limits[limitType];
+  // Use ANONYMOUS tier limits since there's no authentication
+  const limits = RATE_LIMITS.ANONYMOUS;
+  const limit = (limits as any)[limitType] || limits.DEFAULT;
   
   if (requestCount >= limit) {
     return {

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Button } from "@diffit/ui/button";
+import { Button } from "@diffit/ui";
 import { FileQuestion } from "lucide-react";
 
 export default function NotFound() {

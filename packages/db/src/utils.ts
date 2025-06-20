@@ -40,7 +40,7 @@ export function sanitizeInput(input: string): string {
 export function parseSortParams(
   sort?: string,
   allowedFields: string[] = ['createdAt', 'updatedAt', 'viewCount']
-): Prisma.SortOrder {
+): any {
   if (!sort) return { createdAt: 'desc' };
   
   const [field, direction] = sort.split(':');
@@ -51,7 +51,7 @@ export function parseSortParams(
   
   const order = direction === 'asc' ? 'asc' : 'desc';
   
-  return { [field]: order } as any;
+  return { [field]: order };
 }
 
 /**

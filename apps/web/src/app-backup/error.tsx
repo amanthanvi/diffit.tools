@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { Button } from "@diffit/ui/button";
+import { Button } from "@diffit/ui";
 import { AlertTriangle } from "lucide-react";
 
 export default function Error({

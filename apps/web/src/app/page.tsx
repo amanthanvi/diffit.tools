@@ -1,143 +1,70 @@
-import Link from "next/link";
-import { ArrowRight, Code, FileText, Users, Zap, Shield, Globe } from "lucide-react";
-import { Button } from "@diffit/ui/button";
-import { Card } from "@diffit/ui/card";
-import { DiffDemo } from "@/components/marketing/diff-demo";
-import { FeatureGrid } from "@/components/marketing/feature-grid";
-import { Header } from "@/components/layout/header";
-import { Footer } from "@/components/layout/footer";
-
-const features = [
-  {
-    icon: Zap,
-    title: "Lightning Fast",
-    description: "WebAssembly-powered diff engine processes large files instantly",
-  },
-  {
-    icon: Code,
-    title: "Syntax Highlighting",
-    description: "Support for 100+ programming languages with accurate highlighting",
-  },
-  {
-    icon: Users,
-    title: "Real-time Collaboration",
-    description: "Share diffs and collaborate with your team in real-time",
-  },
-  {
-    icon: Shield,
-    title: "Secure & Private",
-    description: "End-to-end encryption and automatic cleanup of sensitive data",
-  },
-  {
-    icon: FileText,
-    title: "Multiple Formats",
-    description: "Compare text, code, JSON, PDF, and more with specialized viewers",
-  },
-  {
-    icon: Globe,
-    title: "API Access",
-    description: "Integrate diff functionality into your applications with our API",
-  },
-];
+import { SimpleFooter } from "@/components/layout/simple-footer";
+import { SimpleHeader } from "@/components/layout/simple-header";
+import { SimpleButton } from "@/components/simple-button";
 
 export default function HomePage() {
   return (
-    <>
-      <Header />
-      <main className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col">
+      <SimpleHeader />
+      <main className="flex-1">
         {/* Hero Section */}
-        <section className="relative overflow-hidden px-6 py-24 sm:py-32 lg:px-8">
-          <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary/5 via-primary/0 to-transparent" />
-          <div className="mx-auto max-w-7xl">
-            <div className="mx-auto max-w-3xl text-center">
-              <h1 className="text-4xl font-bold tracking-tight sm:text-6xl">
-                Professional Text Comparison
-                <span className="gradient-text"> Made Simple</span>
-              </h1>
-              <p className="mt-6 text-lg leading-8 text-muted-foreground">
-                Compare text, code, and documents with advanced diff algorithms.
-                Collaborate in real-time, track changes, and export comparisons
-                with ease.
-              </p>
-              <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:justify-center">
-                <Link href="/diff">
-                  <Button size="lg" className="group">
-                    Start Comparing
-                    <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                  </Button>
-                </Link>
-                <Link href="/sign-up">
-                  <Button size="lg" variant="outline">
-                    Create Free Account
-                  </Button>
-                </Link>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Demo Section */}
-        <section className="px-6 py-16 lg:px-8">
-          <div className="mx-auto max-w-7xl">
-            <div className="mx-auto max-w-2xl text-center">
-              <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
-                See It In Action
-              </h2>
-              <p className="mt-4 text-lg text-muted-foreground">
-                Experience the power of our diff engine with this interactive demo
-              </p>
-            </div>
-            <div className="mt-12">
-              <DiffDemo />
+        <section className="container mx-auto relative py-24 lg:py-32 px-4">
+          <div className="mx-auto max-w-4xl text-center">
+            <h1 className="text-4xl font-bold tracking-tight sm:text-6xl lg:text-7xl">
+              Compare text with{" "}
+              <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">precision</span>
+            </h1>
+            <p className="mt-6 text-lg leading-8 text-gray-600 sm:text-xl">
+              Advanced diff visualization for developers, writers, and teams. 
+              Compare files, track changes, and collaborate in real-time.
+            </p>
+            <div className="mt-10 flex items-center justify-center gap-x-6">
+              <SimpleButton href="/diff" size="lg">
+                Start Comparing
+              </SimpleButton>
+              <SimpleButton href="/docs" variant="outline" size="lg">
+                Learn More
+              </SimpleButton>
             </div>
           </div>
         </section>
 
         {/* Features Section */}
-        <section className="bg-muted/50 px-6 py-24 lg:px-8">
-          <div className="mx-auto max-w-7xl">
-            <div className="mx-auto max-w-2xl text-center">
-              <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
-                Everything You Need
-              </h2>
-              <p className="mt-4 text-lg text-muted-foreground">
-                Powerful features designed for developers, writers, and teams
-              </p>
-            </div>
-            <div className="mt-12">
-              <FeatureGrid features={features} />
-            </div>
-          </div>
-        </section>
-
-        {/* CTA Section */}
-        <section className="px-6 py-24 lg:px-8">
-          <div className="mx-auto max-w-7xl">
-            <Card className="relative overflow-hidden p-12">
-              <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary/10 via-primary/5 to-transparent" />
-              <div className="mx-auto max-w-2xl text-center">
-                <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
-                  Ready to Get Started?
-                </h2>
-                <p className="mt-4 text-lg text-muted-foreground">
-                  Join thousands of developers and teams using Diffit
-                </p>
-                <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:justify-center">
-                  <Link href="/diff">
-                    <Button size="lg">Try It Free</Button>
-                  </Link>
-                  <Link href="/pricing">
-                    <Button size="lg" variant="outline">
-                      View Pricing
-                    </Button>
-                  </Link>
+        <section className="container mx-auto py-16 lg:py-24 px-4">
+          <div className="mx-auto max-w-6xl">
+            <h2 className="text-center text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
+              Everything you need
+            </h2>
+            <p className="mt-4 text-center text-lg text-gray-600">
+              Powerful features designed for modern development workflows
+            </p>
+            <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              <div className="p-6 border rounded-lg hover:shadow-lg transition-shadow">
+                <div className="h-12 w-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
+                  <span className="text-blue-600 text-xl">⚡</span>
                 </div>
+                <h3 className="text-xl font-semibold mb-2">Fast Comparison</h3>
+                <p className="text-gray-600">Compare large texts instantly with our optimized diff algorithm.</p>
               </div>
-            </Card>
+              <div className="p-6 border rounded-lg hover:shadow-lg transition-shadow">
+                <div className="h-12 w-12 bg-green-100 rounded-lg flex items-center justify-center mb-4">
+                  <span className="text-green-600 text-xl">📄</span>
+                </div>
+                <h3 className="text-xl font-semibold mb-2">File Support</h3>
+                <p className="text-gray-600">Upload and compare files directly in your browser.</p>
+              </div>
+              <div className="p-6 border rounded-lg hover:shadow-lg transition-shadow">
+                <div className="h-12 w-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4">
+                  <span className="text-purple-600 text-xl">💾</span>
+                </div>
+                <h3 className="text-xl font-semibold mb-2">Export Results</h3>
+                <p className="text-gray-600">Export your comparisons in multiple formats for sharing.</p>
+              </div>
+            </div>
           </div>
         </section>
       </main>
-      <Footer />
-    </>
+      <SimpleFooter />
+    </div>
   );
 }

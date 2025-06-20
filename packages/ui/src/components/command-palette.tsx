@@ -143,6 +143,46 @@ const CommandShortcut = ({
 };
 CommandShortcut.displayName = 'CommandShortcut';
 
+interface CommandPaletteCommand {
+  label: string;
+  keywords?: string[];
+  onSelect: () => void;
+}
+
+interface CommandPaletteGroup {
+  group: string;
+  items: CommandPaletteCommand[];
+}
+
+interface CommandPaletteProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  commands: CommandPaletteGroup[];
+}
+
+const CommandPalette = ({ open, onOpenChange, commands }: CommandPaletteProps) => {
+  return (
+    <CommandDialog open={open} onOpenChange={onOpenChange}>
+      <CommandInput placeholder="Type a command or search..." />
+      <CommandList>
+        <CommandEmpty>No results found.</CommandEmpty>
+        {commands.map((group) => (
+          <CommandGroup key={group.group} heading={group.group}>
+            {group.items.map((item) => (
+              <CommandItem
+                key={item.label}
+                onSelect={item.onSelect}
+              >
+                {item.label}
+              </CommandItem>
+            ))}
+          </CommandGroup>
+        ))}
+      </CommandList>
+    </CommandDialog>
+  );
+};
+
 export {
   Command,
   CommandDialog,
@@ -153,4 +193,5 @@ export {
   CommandItem,
   CommandShortcut,
   CommandSeparator,
+  CommandPalette,
 };

@@ -6,11 +6,15 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@diffit/ui/dialog";
-import { Label } from "@diffit/ui/label";
-import { Slider } from "@diffit/ui/slider";
-import { Switch } from "@diffit/ui/switch";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@diffit/ui/select";
+  Label,
+  Slider,
+  Switch,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from "@diffit/ui";
 
 interface SettingsDialogProps {
   open: boolean;

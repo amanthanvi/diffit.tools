@@ -1,8 +1,9 @@
 "use client";
 
+export const dynamic = 'force-dynamic';
+
 import { Metadata } from "next";
-import { Card } from "@diffit/ui/card";
-import { Button } from "@diffit/ui/button";
+import { Card, Button } from "@diffit/ui";
 import { FileText, Clock, Trash2, Download, Share2 } from "lucide-react";
 import { useRecentDiffsStore } from "@/stores/recent-diffs-store";
 import Link from "next/link";

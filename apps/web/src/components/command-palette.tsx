@@ -3,11 +3,10 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Command } from "lucide-react";
-import { CommandPalette as UICommandPalette } from "@diffit/ui/command-palette";
-import { Button } from "@diffit/ui/button";
+import { CommandPalette, Button } from "@diffit/ui";
 import { useHotkeys } from "@/hooks/use-hotkeys";
 
-export function CommandPalette() {
+export function AppCommandPalette() {
   const [open, setOpen] = useState(false);
   const router = useRouter();
 
@@ -53,7 +52,10 @@ export function CommandPalette() {
           keywords: ["import", "upload", "file"],
           onSelect: () => {
             // Trigger file upload
-            document.getElementById("file-upload-left")?.click();
+            const element = document.getElementById("file-upload-left");
+            if (element instanceof HTMLElement) {
+              element.click();
+            }
           },
         },
         {
@@ -61,7 +63,10 @@ export function CommandPalette() {
           keywords: ["export", "download", "save"],
           onSelect: () => {
             // Open export dialog
-            document.querySelector("[data-export-trigger]")?.click();
+            const element = document.querySelector("[data-export-trigger]");
+            if (element instanceof HTMLElement) {
+              element.click();
+            }
           },
         },
       ],
@@ -100,7 +105,7 @@ export function CommandPalette() {
         <span className="text-xs text-muted-foreground">⌘K</span>
       </Button>
 
-      <UICommandPalette
+      <CommandPalette
         open={open}
         onOpenChange={setOpen}
         commands={commands}

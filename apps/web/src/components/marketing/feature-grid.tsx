@@ -1,5 +1,5 @@
 import { LucideIcon } from "lucide-react";
-import { Card } from "@diffit/ui/card";
+import { Card } from "@diffit/ui";
 
 interface Feature {
   icon: LucideIcon;

@@ -1,15 +1,31 @@
 import { inferAsyncReturnType } from '@trpc/server';
 import { FetchCreateContextFnOptions } from '@trpc/server/adapters/fetch';
-import { db } from '@diffit/db';
-import type { Context, RedisClient } from '../types';
-import { createRedisClient } from '../utils/redis';
+import type { RedisClient } from '../types';
+
+// Lazy imports to avoid loading during build
+let dbPromise: Promise<any> | null = null;
+let redisClientPromise: Promise<any> | null = null;
+
+async function getDb() {
+  if (!dbPromise) {
+    dbPromise = import('@diffit/db').then(mod => mod.db);
+  }
+  return dbPromise;
+}
+
+async function getRedisClient() {
+  if (!redisClientPromise) {
+    redisClientPromise = import('../utils/redis').then(mod => mod.createRedisClient());
+  }
+  return redisClientPromise;
+}
 
 /**
  * Creates the context for each request
  */
 export async function createContext(
   opts: FetchCreateContextFnOptions
-): Promise<Context> {
+) {
   const { req, resHeaders } = opts;
   
   // Create response object that can be used to set headers
@@ -17,10 +33,13 @@ export async function createContext(
     headers: resHeaders,
   } as Response;
   
+  // Get database connection
+  const db = await getDb();
+  
   // Get Redis client if available
   let redis: RedisClient | undefined;
   try {
-    redis = await createRedisClient();
+    redis = await getRedisClient();
   } catch (error) {
     console.warn('Redis connection failed, continuing without cache:', error);
   }

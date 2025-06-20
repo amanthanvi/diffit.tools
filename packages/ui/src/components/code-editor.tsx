@@ -1,3 +1,5 @@
+"use client";
+
 import * as React from 'react';
 import Editor, { OnMount, BeforeMount } from '@monaco-editor/react';
 import { cn } from '../lib/utils';

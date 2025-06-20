@@ -9,12 +9,13 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@diffit/ui/dialog";
-import { Button } from "@diffit/ui/button";
-import { Label } from "@diffit/ui/label";
-import { RadioGroup, RadioGroupItem } from "@diffit/ui/radio-group";
-import { Checkbox } from "@diffit/ui/checkbox";
-import { useToast } from "@diffit/ui/use-toast";
+  Button,
+  Label,
+  RadioGroup,
+  RadioGroupItem,
+  Checkbox,
+  useToast
+} from "@diffit/ui";
 import { useDiffStore } from "@/stores/diff-store";
 
 interface ExportDialogProps {

@@ -7,6 +7,7 @@ export default defineConfig({
   splitting: false,
   sourcemap: true,
   clean: true,
+  noExternal: ['superjson'], // Bundle superjson to avoid ESM issues
   external: [
     '@diffit/auth',
     '@diffit/db',
@@ -14,5 +15,8 @@ export default defineConfig({
     '@diffit/types',
     '@trpc/server',
     'ws',
+    'crypto',
+    'stream',
+    'buffer',
   ],
 });
