@@ -54,7 +54,7 @@
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
-    "@diffit/config": "workspace:*",
+    "@diffit/config": "file:../config",
     "@storybook/addon-essentials": "^7.6.10",
     "@storybook/addon-interactions": "^7.6.10",
     "@storybook/addon-links": "^7.6.10",

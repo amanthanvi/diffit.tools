@@ -17,7 +17,7 @@
     "@astrojs/sitemap": "^3.0.5",
     "@astrojs/tailwind": "^5.1.0",
     "@astrojs/vercel": "^7.0.1",
-    "@diffit/ui": "workspace:*",
+    "@diffit/ui": "file:../../packages/ui",
     "@types/react": "^18.2.48",
     "@types/react-dom": "^18.2.18",
     "astro": "^4.2.1",
@@ -26,7 +26,7 @@
     "tailwindcss": "^3.4.1"
   },
   "devDependencies": {
-    "@diffit/config": "workspace:*",
+    "@diffit/config": "file:../../packages/config",
     "eslint": "^8.56.0",
     "eslint-plugin-astro": "^0.31.4",
     "prettier": "^3.2.4",
