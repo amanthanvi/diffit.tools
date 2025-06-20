@@ -342,7 +342,7 @@ export default function DiffPage() {
                   <textarea
                     value={leftText}
                     onChange={(e) => setLeftText(e.target.value)}
-                    className="w-full h-96 p-4 font-mono text-sm resize-none focus:outline-none bg-transparent"
+                    className="w-full h-96 p-4 font-mono text-sm resize-none focus:outline-none bg-transparent text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500"
                     placeholder="Paste or type your original text here..."
                     spellCheck={false}
                   />
@@ -374,7 +374,7 @@ export default function DiffPage() {
                   <textarea
                     value={rightText}
                     onChange={(e) => setRightText(e.target.value)}
-                    className="w-full h-96 p-4 font-mono text-sm resize-none focus:outline-none bg-transparent"
+                    className="w-full h-96 p-4 font-mono text-sm resize-none focus:outline-none bg-transparent text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500"
                     placeholder="Paste or type your modified text here..."
                     spellCheck={false}
                   />

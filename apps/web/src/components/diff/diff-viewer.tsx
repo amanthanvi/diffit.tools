@@ -8,8 +8,12 @@ import { cn } from "@/lib/utils";
 
 // Myers diff algorithm implementation
 function myersDiff(oldText: string, newText: string) {
-  const oldLines = oldText.split('\n');
-  const newLines = newText.split('\n');
+  // Ensure inputs are strings
+  const oldStr = String(oldText || '');
+  const newStr = String(newText || '');
+  
+  const oldLines = oldStr.split('\n');
+  const newLines = newStr.split('\n');
   
   const m = oldLines.length;
   const n = newLines.length;
@@ -101,7 +105,11 @@ function buildDiff(oldLines: string[], newLines: string[], trace: any[], d: numb
 
 // Character-level diff for inline view
 function charDiff(oldText: string, newText: string) {
-  const changes = myersDiff(oldText, newText);
+  // Ensure inputs are strings
+  const oldStr = String(oldText || '');
+  const newStr = String(newText || '');
+  
+  const changes = myersDiff(oldStr, newStr);
   return changes.map(change => {
     if (change.type === 'unchanged') {
       return change;
@@ -135,10 +143,14 @@ export function DiffViewer() {
 
     setIsProcessing(true);
     try {
+      // Ensure content is string
+      const leftStr = String(leftContent || '');
+      const rightStr = String(rightContent || '');
+      
       // Use Myers diff algorithm for accurate diffs
       const diffResult = diffMode === 'inline' 
-        ? charDiff(leftContent, rightContent)
-        : myersDiff(leftContent, rightContent);
+        ? charDiff(leftStr, rightStr)
+        : myersDiff(leftStr, rightStr);
       
       // Calculate statistics
       let additions = 0;
