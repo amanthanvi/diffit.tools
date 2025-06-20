@@ -80,8 +80,8 @@ export default function DiffPage() {
   useEffect(() => {
     if (showDiff && (leftText || rightText)) {
       // Simple diff stats calculation (will be enhanced with WebAssembly)
-      const leftLines = leftText.split('\n');
-      const rightLines = rightText.split('\n');
+      const leftLines = String(leftText || '').split('\n');
+      const rightLines = String(rightText || '').split('\n');
       const maxLines = Math.max(leftLines.length, rightLines.length);
       let additions = 0;
       let deletions = 0;

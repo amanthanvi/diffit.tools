@@ -65,8 +65,8 @@ export function DiffDemo() {
   // Generate diff lines for the current example
   useEffect(() => {
     const example = demoExamples[activeExample];
-    const leftLines = example.left.split('\n');
-    const rightLines = example.right.split('\n');
+    const leftLines = String(example.left || '').split('\n');
+    const rightLines = String(example.right || '').split('\n');
     
     const lines = [];
     const maxLength = Math.max(leftLines.length, rightLines.length);

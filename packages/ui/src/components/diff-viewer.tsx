@@ -170,7 +170,7 @@ const DiffViewer = React.forwardRef<HTMLDivElement, DiffViewerProps>(
             );
           }
 
-          const words = line.content.split(/(\s+)/);
+          const words = String(line.content || '').split(/(\s+)/);
           return (
             <div
               key={index}

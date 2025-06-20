@@ -142,8 +142,8 @@ export const useDiffStore = create<DiffState & DiffActions>()(
           description: state.description,
           leftContent: state.leftContent,
           rightContent: state.rightContent,
-          leftLines: state.leftContent.split("\n").length,
-          rightLines: state.rightContent.split("\n").length,
+          leftLines: String(state.leftContent || '').split("\n").length,
+          rightLines: String(state.rightContent || '').split("\n").length,
           syntax: state.syntax,
         });
         set({ currentDiffId: diffId });
