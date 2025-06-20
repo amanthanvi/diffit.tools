@@ -5,17 +5,6 @@
   "framework": null,
   "outputDirectory": "apps/web/.next",
   "regions": ["iad1"],
-  "functions": {
-    "apps/web/src/app/api/upload/route.ts": {
-      "maxDuration": 30
-    },
-    "apps/web/src/app/api/export/route.ts": {
-      "maxDuration": 30
-    },
-    "apps/web/src/app/api/trpc/[trpc]/route.ts": {
-      "maxDuration": 10
-    }
-  },
   "headers": [
     {
       "source": "/(.*)",
