@@ -6,7 +6,7 @@
   "author": "Diffit.tools Team",
   "license": "MIT",
   "engines": {
-    "node": ">=18.0.0"
+    "node": "20.x"
   },
   "scripts": {
     "build": "turbo run build",
@@ -59,8 +59,5 @@
   "workspaces": [
     "apps/*",
     "packages/*"
-  ],
-  "overrides": {
-    "typescript": "5.3.3"
-  }
+  ]
 }
