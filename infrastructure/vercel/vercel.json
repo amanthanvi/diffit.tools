@@ -1,0 +1,19 @@
+{
+  "framework": null,
+  "outputDirectory": null,
+  "buildCommand": "pnpm turbo run build",
+  "devCommand": "pnpm turbo run dev",
+  "installCommand": "pnpm install",
+  "regions": ["iad1"],
+  "functions": {
+    "apps/web/app/api/**/*.ts": {
+      "maxDuration": 10
+    }
+  },
+  "crons": [
+    {
+      "path": "/api/cron/cleanup",
+      "schedule": "0 2 * * *"
+    }
+  ]
+}

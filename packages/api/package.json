@@ -1,0 +1,43 @@
+{
+  "name": "@diffit/api",
+  "version": "2.0.0",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "jest",
+    "lint": "eslint src",
+    "type-check": "tsc --noEmit",
+    "clean": "rm -rf dist .turbo node_modules"
+  },
+  "dependencies": {
+    "@diffit/auth": "workspace:*",
+    "@diffit/db": "workspace:*",
+    "@diffit/diff-engine": "workspace:*",
+    "@diffit/types": "workspace:*",
+    "@trpc/server": "^10.45.0",
+    "superjson": "^2.2.1",
+    "zod": "^3.22.4",
+    "ws": "^8.16.0",
+    "ioredis": "^5.3.2"
+  },
+  "devDependencies": {
+    "@diffit/config": "workspace:*",
+    "@types/jest": "^29.5.11",
+    "@types/ws": "^8.5.10",
+    "eslint": "^8.56.0",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.1",
+    "tsup": "^8.0.1",
+    "typescript": "^5.3.3"
+  }
+}

@@ -1,0 +1,18 @@
+[build]
+target = "wasm32-unknown-unknown"
+
+[target.wasm32-unknown-unknown]
+runner = "wasm-pack test --node"
+
+[env]
+# Optimize for size in release builds
+CARGO_PROFILE_RELEASE_OPT_LEVEL = "z"
+CARGO_PROFILE_RELEASE_LTO = "fat"
+CARGO_PROFILE_RELEASE_CODEGEN_UNITS = "1"
+CARGO_PROFILE_RELEASE_PANIC = "abort"
+
+# Enable debug info for development
+CARGO_PROFILE_DEV_DEBUG = "2"
+
+# WebAssembly specific optimizations
+RUSTFLAGS = "-C target-feature=+bulk-memory,+mutable-globals"

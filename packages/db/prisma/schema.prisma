@@ -1,0 +1,222 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// Enums
+enum DiffVisibility {
+  PUBLIC
+  PRIVATE
+  UNLISTED
+}
+
+enum DiffType {
+  TEXT
+  FILE
+  CODE
+  JSON
+  PDF
+}
+
+enum DiffStatus {
+  ACTIVE
+  EXPIRED
+  DELETED
+}
+
+enum CommentStatus {
+  ACTIVE
+  RESOLVED
+  DELETED
+}
+
+enum UsageType {
+  DIFF_CREATE
+  DIFF_VIEW
+  API_CALL
+  FILE_UPLOAD
+  EXPORT
+  SHARE
+}
+
+// Main Diff model
+model Diff {
+  id         String         @id @default(cuid())
+  slug       String         @unique // URL-friendly identifier
+  
+  // Content
+  title       String?
+  description String?
+  leftContent String         @db.Text
+  rightContent String        @db.Text
+  leftTitle   String?
+  rightTitle  String?
+  
+  // Metadata
+  type        DiffType       @default(TEXT)
+  visibility  DiffVisibility @default(PUBLIC)
+  status      DiffStatus     @default(ACTIVE)
+  
+  // Options
+  ignoreWhitespace Boolean @default(false)
+  ignoreCase       Boolean @default(false)
+  contextLines     Int     @default(3)
+  
+  // Expiration
+  expiresAt   DateTime?
+  viewCount   Int       @default(0)
+  
+  // SEO
+  metaTitle       String?
+  metaDescription String?
+  
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Relations
+  collection   Collection?    @relation(fields: [collectionId], references: [id], onDelete: SetNull)
+  collectionId String?
+  comments     Comment[]
+  files        FileMetadata[]
+  analytics    DiffAnalytics?
+  
+  @@index([slug])
+  @@index([visibility])
+  @@index([status])
+  @@index([type])
+  @@index([createdAt])
+  @@index([expiresAt])
+  @@index([collectionId])
+}
+
+// Collection for organizing diffs
+model Collection {
+  id          String         @id @default(cuid())
+  name        String
+  description String?
+  slug        String         @unique
+  isPublic    Boolean        @default(false)
+  
+  // Appearance
+  color       String?
+  icon        String?
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Relations
+  diffs Diff[]
+  
+  @@index([slug])
+  @@index([isPublic])
+}
+
+// Comments for collaboration
+model Comment {
+  id       String        @id @default(cuid())
+  diffId   String
+  parentId String?       // For nested comments
+  
+  // Anonymous author info
+  authorName String?       @default("Anonymous")
+  
+  content  String        @db.Text
+  status   CommentStatus @default(ACTIVE)
+  
+  // Position in diff
+  lineNumber Int?
+  side       String?      // 'left' or 'right'
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Relations
+  diff     Diff      @relation(fields: [diffId], references: [id], onDelete: Cascade)
+  parent   Comment?  @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies  Comment[] @relation("CommentReplies")
+  
+  @@index([diffId])
+  @@index([parentId])
+  @@index([status])
+}
+
+// File metadata for file-based diffs
+model FileMetadata {
+  id       String @id @default(cuid())
+  diffId   String
+  side     String // 'left' or 'right'
+  
+  filename     String
+  mimeType     String
+  size         Int
+  checksum     String
+  storagePath  String // S3 or local storage path
+  
+  createdAt DateTime @default(now())
+  
+  // Relations
+  diff Diff @relation(fields: [diffId], references: [id], onDelete: Cascade)
+  
+  @@unique([diffId, side])
+  @@index([diffId])
+}
+
+// Usage tracking for analytics
+model Usage {
+  id        String    @id @default(cuid())
+  type      UsageType
+  
+  // Metadata
+  metadata  Json?     // Additional context
+  ipAddress String?
+  userAgent String?
+  
+  createdAt DateTime @default(now())
+  
+  @@index([type])
+  @@index([createdAt])
+}
+
+// Analytics for diffs
+model DiffAnalytics {
+  id     String @id @default(cuid())
+  diffId String @unique
+  
+  // View analytics
+  totalViews      Int @default(0)
+  uniqueViews     Int @default(0)
+  avgViewDuration Int @default(0) // in seconds
+  
+  // Interaction analytics
+  downloads    Int @default(0)
+  shares       Int @default(0)
+  embedViews   Int @default(0)
+  apiAccess    Int @default(0)
+  
+  // Geographic data
+  viewsByCountry Json? // { "US": 100, "UK": 50, ... }
+  
+  // Device data
+  viewsByDevice Json? // { "desktop": 150, "mobile": 50, ... }
+  
+  // Referrer data
+  topReferrers Json? // [{ "source": "google.com", "count": 50 }, ...]
+  
+  lastViewedAt DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  
+  // Relations
+  diff Diff @relation(fields: [diffId], references: [id], onDelete: Cascade)
+  
+  @@index([diffId])
+}

@@ -1,0 +1,10 @@
+{
+  "out-dir": "pkg",
+  "out-name": "index",
+  "target": "web",
+  "mode": "force",
+  "extra-options": [
+    "--no-typescript",
+    "--weak-refs"
+  ]
+}

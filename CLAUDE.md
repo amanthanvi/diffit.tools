@@ -4,222 +4,195 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-diffit.tools is a highly optimized web-based diff comparison utility built with FastAPI. It provides secure, fast, and accessible text, file, and PDF comparison with advanced features including real-time validation, export capabilities, and comprehensive security measures.
+diffit.tools is a high-performance web-based diff comparison utility built with Next.js 14 and WebAssembly. It provides secure, fast, and accessible text, file, and PDF comparison with advanced features including real-time validation, export capabilities, and comprehensive security measures. No user accounts are required - all data is stored locally in the browser.
 
 ## Development Commands
 
 ### Local Development
 ```bash
-# Create and activate virtual environment
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+# Install dependencies
+pnpm install
 
-# Install dependencies (optimized with security updates)
-pip install -r requirements.txt
+# Start development server
+pnpm dev
 
-# Run development server (async with optimizations)
-uvicorn app_optimized:app --reload --port 8000
+# Run specific app
+pnpm dev:web      # Main web app
+pnpm dev:docs     # Documentation
+pnpm dev:marketing # Marketing site
+```
 
-# Run with specific configuration
-ENVIRONMENT=development uvicorn app_optimized:app --reload --port 8000
+### Building
+```bash
+# Build all packages and apps
+pnpm build
 
-# Run tests (comprehensive suite)
-pytest tests/ -v
-pytest tests/test_security.py -v    # Security tests
-pytest tests/test_performance.py -v # Performance benchmarks
-pytest tests/test_integration.py -v # Full integration tests
+# Build WebAssembly modules
+pnpm build:wasm
 
-# Run specific test categories
-pytest -m "not benchmark" -v       # Skip benchmark tests
-pytest --benchmark-only            # Only benchmark tests
+# Build specific app
+pnpm build --filter=web
 ```
 
 ### Database Operations (Async)
 ```bash
-# Initialize database (async with optimizations)
-python -c "import asyncio; from database_async import init_db; asyncio.run(init_db())"
+# Generate Prisma client
+pnpm db:generate
 
-# Clean expired diffs (optimized batch processing)
-python -c "import asyncio; from crud_async import cleanup_expired_diffs; from database_async import get_db_context; async def cleanup(): async with get_db_context() as db: await cleanup_expired_diffs(db); asyncio.run(cleanup())"
+# Push schema changes to database
+pnpm db:push
 
-# Check database health
-python -c "import asyncio; from database_async import check_database_health; print(asyncio.run(check_database_health()))"
+# Run migrations
+pnpm db:migrate
+
+# Open Prisma Studio
+pnpm db:studio
+
+# Seed database (development only)
+pnpm db:seed
 ```
 
-### Deployment Commands
+### Testing & Quality
 ```bash
-# Deploy optimized version with full validation
-python deploy_optimized.py
+# Run tests
+pnpm test
+pnpm test:watch
 
-# Deploy without tests (faster)
-python deploy_optimized.py --no-tests
+# Type checking
+pnpm typecheck
 
-# Deploy without dependencies update
-python deploy_optimized.py --no-deps
+# Linting
+pnpm lint
 
-# Rollback to previous version
-python deploy_optimized.py --rollback backups/backup_20240101_120000
-```
-
-### Security and Performance
-```bash
-# Run security audit
-python -m bandit -r . -x tests/
-
-# Check dependencies for vulnerabilities  
-python -m safety check
-
-# Performance profiling
-python -m cProfile -o profile.stats app_optimized.py
-
-# Memory usage analysis
-python -m memory_profiler app_optimized.py
+# Format code
+pnpm format
 ```
 
 ## Architecture Overview
 
-### Optimized Backend Structure
-- **FastAPI Application** (`app_optimized.py`): Enhanced with security middleware, rate limiting, comprehensive error handling, and performance optimizations
-- **Configuration Management** (`config.py`): Centralized settings with validation, environment-specific configs, and security defaults
-- **Security Layer** (`security.py`): CSRF protection, XSS prevention, file validation, input sanitization, and IP extraction
-- **Async Database Layer** (`database_async.py`): Connection pooling, async operations, health checks, and query optimization
-- **Async CRUD Operations** (`crud_async.py`): Optimized queries, caching, batch operations, and performance monitoring
-- **Optimized Diff Engine** (`diff_logic_optimized.py`): Memory-efficient algorithms, async processing, streaming for large files, and security validations
+### Monorepo Structure
+- **Turborepo** for build orchestration
+- **PNPM workspaces** for dependency management
+- **Shared packages** for code reuse
 
-### Enhanced Frontend Architecture
-- **Optimized SPA** (`templates/index_optimized.html`): Accessible design, SEO optimization, lazy loading, and performance enhancements
-- **Advanced Client Logic** (`static/js/main_optimized.js`): Class-based architecture, error handling, accessibility features, and performance optimizations
-- **Optimized Styling** (`static/css/styles_optimized.css`): CSS custom properties, responsive design, performance optimizations, and accessibility improvements
+### Apps
+- **web**: Main Next.js 14 application with App Router
+- **docs**: Documentation site using Nextra
+- **marketing**: High-performance landing page with Astro
 
-### Security Features
-1. **CSRF Protection**: Token-based validation for all forms
-2. **XSS Prevention**: Comprehensive input sanitization and output encoding
-3. **File Upload Security**: MIME type validation, size limits, and virus scanning preparation
-4. **Rate Limiting**: IP-based throttling with configurable limits
-5. **Security Headers**: CSP, HSTS, X-Frame-Options, and more
-6. **Input Validation**: Server-side validation with real-time client feedback
-7. **Session Security**: Secure cookie configuration and session management
+### Core Packages
+- **packages/ui**: Radix UI + Tailwind CSS component library
+- **packages/diff-engine**: WebAssembly diff algorithms (Rust)
+- **packages/api**: tRPC API layer
+- **packages/db**: Prisma ORM and database utilities
+- **packages/types**: Shared TypeScript types
+- **packages/config**: Shared configurations
 
-### Performance Optimizations
-1. **Async Operations**: All database and I/O operations are async
-2. **Connection Pooling**: Optimized database connection management
-3. **Caching**: Redis-compatible caching for frequently accessed data
-4. **Memory Management**: Efficient handling of large files and diffs
-5. **Frontend Optimization**: Lazy loading, resource preloading, and minimal bundles
-6. **Database Indexing**: Optimized queries with proper indexing
-7. **Background Tasks**: Async cleanup and maintenance operations
-
-### Accessibility Features
-1. **ARIA Labels**: Comprehensive screen reader support
-2. **Keyboard Navigation**: Full keyboard accessibility
-3. **Focus Management**: Proper focus indicators and management
-4. **Color Contrast**: WCAG AA compliant color schemes
-5. **Responsive Design**: Mobile-first responsive layout
-6. **Reduced Motion**: Support for users who prefer reduced motion
+### Key Features
+1. **No Authentication Required**: All data stored locally in browser
+2. **High Performance**: WebAssembly diff engine handles millions of lines
+3. **Multiple View Modes**: Split, unified, and inline views
+4. **Export Options**: PDF, HTML, Markdown, JSON
+5. **Accessibility**: WCAG AA compliant
+6. **Dark Mode**: System-aware theme switching
 
 ## Environment Configuration
 
 ### Required Environment Variables
 ```bash
-# Security
-SECRET_KEY=your-secret-key-here
-SESSION_TIMEOUT_HOURS=1
-
 # Database
-DATABASE_URL=postgresql+asyncpg://user:pass@host:port/db
-DATABASE_POOL_SIZE=20
+DATABASE_URL=postgresql://...
+DIRECT_URL=postgresql://... # For migrations
 
-# File Limits
-MAX_FILE_SIZE_MB=4
-MAX_TEXT_LENGTH=500000
+# Session
+SESSION_SECRET_KEY=your-secret-key-min-32-chars
 
-# Rate Limiting
-RATE_LIMIT_ENABLED=true
-RATE_LIMIT_DEFAULT=100/hour
-RATE_LIMIT_UPLOAD=20/hour
+# Environment
+ENVIRONMENT=development
+NODE_ENV=development
 
-# Monitoring
-SENTRY_DSN=your-sentry-dsn-here
-LOG_LEVEL=INFO
-
-# CORS
-CORS_ORIGINS=https://diffit.tools,https://www.diffit.tools
+# Monitoring (optional)
+SENTRY_DSN=
+NEXT_PUBLIC_POSTHOG_KEY=
 ```
 
-### Deployment Environments
-- **Development**: SQLite, debug logging, relaxed security
-- **Production**: PostgreSQL, optimized logging, full security
-- **Testing**: In-memory database, comprehensive test coverage
+## Local Storage Architecture
 
-## Testing Strategy
+Since there's no authentication, the app uses localStorage for:
+- Recent diffs history
+- User preferences (theme, view mode)
+- Saved diffs with titles and descriptions
 
-### Comprehensive Test Suite
-- **Security Tests** (`tests/test_security.py`): CSRF, XSS, file validation, input sanitization
-- **Performance Tests** (`tests/test_performance.py`): Benchmarks, memory usage, concurrency
-- **Integration Tests** (`tests/test_integration.py`): Full application flow, API endpoints
-- **Unit Tests**: Individual component testing with mocks
+Key storage keys:
+- `diffit:recentDiffs` - Array of recent diff metadata
+- `diffit:preferences` - User preferences object
+- `diffit:savedDiffs` - Map of saved diffs by ID
 
-### Test Categories
+## Development Guidelines
+
+### Code Style
+- Use TypeScript strict mode
+- Follow ESLint rules
+- Use Prettier for formatting
+- Prefer functional components
+- Use React hooks appropriately
+
+### Component Guidelines
+- Components in `packages/ui` should be generic and reusable
+- App-specific components stay in `apps/web/src/components`
+- Use Radix UI primitives for accessibility
+- Style with Tailwind CSS utilities
+
+### API Design
+- Use tRPC for type-safe APIs
+- Keep routers focused and small
+- Use Zod for input validation
+- Handle errors gracefully
+
+### Performance
+- Lazy load heavy components
+- Use React.memo where appropriate
+- Optimize images with next/image
+- Minimize bundle size
+
+### Testing
+- Write unit tests for utilities
+- Integration tests for API routes
+- E2E tests for critical flows
+- Aim for >80% coverage
+
+## Deployment
+
+### Vercel Deployment
 ```bash
-# Run all tests
-pytest tests/ -v
+# Deploy preview
+vercel
 
-# Security validation
-pytest tests/test_security.py -v
-
-# Performance benchmarks  
-pytest tests/test_performance.py --benchmark-only
-
-# Integration testing
-pytest tests/test_integration.py -v
-
-# Test coverage
-pytest --cov=. --cov-report=html tests/
+# Deploy to production
+vercel --prod
 ```
 
-## Key Optimizations Implemented
+### Environment Setup
+1. Set all required env vars in Vercel dashboard
+2. Configure domains
+3. Set up monitoring (optional)
 
-### Security Enhancements
-- ✅ CSRF protection on all forms
-- ✅ XSS prevention with content sanitization
-- ✅ File upload validation and MIME type checking
-- ✅ Rate limiting with IP-based throttling
-- ✅ Security headers (CSP, HSTS, etc.)
-- ✅ Input validation and sanitization
-- ✅ Session security improvements
+## Troubleshooting
 
-### Performance Improvements
-- ✅ Async database operations with connection pooling
-- ✅ Memory-efficient diff algorithms
-- ✅ Frontend optimization (lazy loading, caching)
-- ✅ Database query optimization and indexing
-- ✅ Background task processing
-- ✅ Response compression and caching
-- ✅ Resource preloading and bundling
+### Common Issues
+1. **WASM not loading**: Ensure `pnpm build:wasm` was run
+2. **Database errors**: Check DATABASE_URL is correct
+3. **Type errors**: Run `pnpm typecheck` to diagnose
 
-### Code Quality
-- ✅ Type hints throughout codebase
-- ✅ Comprehensive error handling
-- ✅ Structured logging and monitoring
-- ✅ Configuration management
-- ✅ Documentation and code comments
-- ✅ Consistent code formatting
+### Debug Commands
+```bash
+# Check dependency graph
+pnpm ls
 
-### Accessibility & UX
-- ✅ WCAG AA compliance
-- ✅ Keyboard navigation support
-- ✅ Screen reader compatibility
-- ✅ Mobile-responsive design
-- ✅ Dark mode with system preference detection
-- ✅ Loading states and progress indicators
+# Clean all build artifacts
+pnpm clean
 
-## Migration Notes
-
-The optimized version maintains backward compatibility while adding significant improvements. Key changes:
-- Database operations are now async (requires `await`)
-- Configuration centralized in `config.py`
-- Security middleware automatically applied
-- Enhanced error handling and logging
-- Performance monitoring and metrics
-
-Use `deploy_optimized.py` for safe deployment with automatic backup and rollback capabilities.
+# Reinstall dependencies
+rm -rf node_modules pnpm-lock.yaml
+pnpm install
+```

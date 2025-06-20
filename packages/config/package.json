@@ -1,0 +1,18 @@
+{
+  "name": "@diffit/config",
+  "version": "2.0.0",
+  "private": true,
+  "main": "index.js",
+  "files": [
+    "eslint",
+    "tailwind",
+    "typescript"
+  ],
+  "exports": {
+    "./eslint": "./eslint/index.js",
+    "./tailwind": "./tailwind/index.js",
+    "./typescript/base.json": "./typescript/base.json",
+    "./typescript/nextjs.json": "./typescript/nextjs.json",
+    "./typescript/library.json": "./typescript/library.json"
+  }
+}

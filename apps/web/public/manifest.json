@@ -1,0 +1,38 @@
+{
+  "name": "Diffit - Professional Text Comparison",
+  "short_name": "Diffit",
+  "description": "Compare text, code, and documents with advanced diff algorithms",
+  "theme_color": "#000000",
+  "background_color": "#ffffff",
+  "display": "standalone",
+  "orientation": "portrait",
+  "scope": "/",
+  "start_url": "/",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "categories": ["productivity", "developer", "utilities"],
+  "shortcuts": [
+    {
+      "name": "New Diff",
+      "url": "/diff",
+      "description": "Create a new diff comparison"
+    },
+    {
+      "name": "Dashboard",
+      "url": "/dashboard",
+      "description": "View your dashboard"
+    }
+  ]
+}

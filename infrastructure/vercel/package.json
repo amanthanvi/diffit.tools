@@ -1,0 +1,15 @@
+{
+  "name": "@diffit/vercel-config",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Vercel deployment configurations and scripts",
+  "scripts": {
+    "deploy:preview": "vercel --scope diffit",
+    "deploy:production": "vercel --prod --scope diffit",
+    "env:pull": "vercel env pull",
+    "env:add": "vercel env add"
+  },
+  "devDependencies": {
+    "vercel": "^33.0.1"
+  }
+}

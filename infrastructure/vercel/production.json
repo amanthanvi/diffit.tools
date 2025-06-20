@@ -1,0 +1,37 @@
+{
+  "env": {
+    "ENVIRONMENT": "production",
+    "DATABASE_URL": "@database-url",
+    "SESSION_SECRET_KEY": "@session-secret-key",
+    "CLERK_SECRET_KEY": "@clerk-secret-key",
+    "SENTRY_DSN": "@sentry-dsn",
+    "SENTRY_AUTH_TOKEN": "@sentry-auth-token"
+  },
+  "build": {
+    "env": {
+      "ENVIRONMENT": "production",
+      "DATABASE_URL": "@database-url",
+      "NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY": "@clerk-publishable-key",
+      "NEXT_PUBLIC_POSTHOG_KEY": "@posthog-key",
+      "NEXT_PUBLIC_POSTHOG_HOST": "@posthog-host",
+      "NEXT_PUBLIC_SENTRY_DSN": "@sentry-dsn",
+      "NEXT_PUBLIC_ENVIRONMENT": "production"
+    }
+  },
+  "regions": ["iad1", "sfo1", "cdg1"],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Strict-Transport-Security",
+          "value": "max-age=63072000; includeSubDomains; preload"
+        },
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://app.posthog.com https://cdn.clerk.dev; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://api.clerk.dev https://app.posthog.com wss://diffit.tools; frame-src 'self' https://accounts.clerk.dev;"
+        }
+      ]
+    }
+  ]
+}
