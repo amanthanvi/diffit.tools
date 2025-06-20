@@ -3,12 +3,20 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Command } from "lucide-react";
-import { CommandPalette, Button } from "@diffit/ui";
+import { CommandPalette as UICommandPalette, Button } from "@diffit/ui";
 import { useHotkeys } from "@/hooks/use-hotkeys";
 
-export function AppCommandPalette() {
-  const [open, setOpen] = useState(false);
+interface CommandPaletteProps {
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+}
+
+export function CommandPalette({ open: propOpen, onOpenChange }: CommandPaletteProps = {}) {
+  const [internalOpen, setInternalOpen] = useState(false);
   const router = useRouter();
+  
+  const open = propOpen !== undefined ? propOpen : internalOpen;
+  const setOpen = onOpenChange || setInternalOpen;
 
   useHotkeys("cmd+k", () => setOpen(true));
   useHotkeys("ctrl+k", () => setOpen(true));
@@ -93,23 +101,33 @@ export function AppCommandPalette() {
     },
   ];
 
-  return (
-    <>
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={() => setOpen(true)}
-        className="hidden md:inline-flex items-center gap-2"
-      >
-        <Command className="h-3 w-3" />
-        <span className="text-xs text-muted-foreground">⌘K</span>
-      </Button>
+  if (propOpen === undefined) {
+    return (
+      <>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setOpen(true)}
+          className="hidden md:inline-flex items-center gap-2"
+        >
+          <Command className="h-3 w-3" />
+          <span className="text-xs text-muted-foreground">⌘K</span>
+        </Button>
 
-      <CommandPalette
-        open={open}
-        onOpenChange={setOpen}
-        commands={commands}
-      />
-    </>
+        <UICommandPalette
+          open={open}
+          onOpenChange={setOpen}
+          commands={commands}
+        />
+      </>
+    );
+  }
+
+  return (
+    <UICommandPalette
+      open={open}
+      onOpenChange={setOpen}
+      commands={commands}
+    />
   );
 }

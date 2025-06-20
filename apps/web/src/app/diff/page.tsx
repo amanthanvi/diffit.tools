@@ -110,18 +110,8 @@ export default function DiffPage() {
     }
   }, [showDiff, leftText, rightText]);
 
-  // Keyboard shortcuts
-  useHotkeys([
-    ['cmd+k', () => setShowCommandPalette(true)],
-    ['cmd+e', () => setShowExportDialog(true)],
-    ['cmd+s', () => setShowShareDialog(true)],
-    ['cmd+,', () => setShowSettingsDialog(true)],
-    ['cmd+enter', handleCompare],
-    ['cmd+shift+c', handleClear],
-    ['cmd+f', () => setIsFullscreen(!isFullscreen)],
-  ]);
-
-  const handleCompare = useCallback(() => {
+  // Define handlers first
+  const handleCompare = () => {
     if (leftText || rightText) {
       setShowDiff(true);
       // Add to recent diffs
@@ -134,28 +124,40 @@ export default function DiffPage() {
         type: 'text'
       });
     }
-  }, [leftText, rightText, addRecentDiff]);
+  };
 
-  const handleClear = useCallback(() => {
+  const handleClear = () => {
     setLeftText("");
     setRightText("");
     setShowDiff(false);
     setDiffStats(null);
-  }, []);
+  };
 
-  const handleCopy = useCallback((text: string) => {
+  const handleCopy = (text: string) => {
     navigator.clipboard.writeText(text);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
-  }, []);
+  };
 
-  const handleFileUpload = useCallback((side: 'left' | 'right', content: string) => {
+  const handleFileUpload = (side: 'left' | 'right', content: string) => {
     if (side === 'left') {
       setLeftText(content);
     } else {
       setRightText(content);
     }
-  }, []);
+  };
+
+  // Keyboard shortcuts
+  useHotkeys([
+    ['cmd+k', () => setShowCommandPalette(true)],
+    ['cmd+e', () => setShowExportDialog(true)],
+    ['cmd+s', () => setShowShareDialog(true)],
+    ['cmd+,', () => setShowSettingsDialog(true)],
+    ['cmd+enter', () => handleCompare()],
+    ['cmd+shift+c', () => handleClear()],
+    ['cmd+f', () => setIsFullscreen(prev => !prev)],
+  ]);
+
 
   return (
     <div className={cn(
