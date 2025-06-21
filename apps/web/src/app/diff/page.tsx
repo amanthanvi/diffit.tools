@@ -67,7 +67,7 @@ export default function DiffPage() {
   const [showSettingsDialog, setShowSettingsDialog] = useState(false);
   const [showShareDialog, setShowShareDialog] = useState(false);
   
-  const { setLeftContent, setRightContent, diffMode, setDiffMode } = useDiffStore();
+  const { setLeftContent, setRightContent } = useDiffStore();
   const { addRecentDiff } = useRecentDiffsStore();
 
   // Initialize diff store when text changes
@@ -139,13 +139,13 @@ export default function DiffPage() {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const handleFileUpload = (side: 'left' | 'right', content: string) => {
+  const handleFileUpload = useCallback((side: 'left' | 'right', content: string) => {
     if (side === 'left') {
       setLeftText(content);
     } else {
       setRightText(content);
     }
-  };
+  }, []);
 
   // Keyboard shortcuts
   useHotkeys([
@@ -419,8 +419,6 @@ export default function DiffPage() {
             >
               <Card className="border-gray-200 dark:border-gray-700 shadow-xl overflow-hidden">
                 <DiffToolbar
-                  diffMode={diffMode}
-                  onDiffModeChange={setDiffMode}
                   onExport={() => setShowExportDialog(true)}
                   onShare={() => setShowShareDialog(true)}
                 />
