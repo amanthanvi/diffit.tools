@@ -46,34 +46,40 @@ This monorepo is organized using Turborepo and PNPM workspaces:
 ## Getting Started
 
 1. Clone the repository:
+
 ```bash
-git clone https://github.com/yourusername/diffit.tools.git
+git clone https://github.com/amanthanvi/diffit.tools.git
 cd diffit.tools
 ```
 
 2. Install dependencies:
+
 ```bash
 pnpm install
 ```
 
 3. Set up environment variables:
+
 ```bash
 cp .env.example .env.local
 # Edit .env.local with your values
 ```
 
 4. Set up the database:
+
 ```bash
 pnpm db:push
 pnpm db:seed # Optional: seed with sample data
 ```
 
 5. Start the development servers:
+
 ```bash
 pnpm dev
 ```
 
 This will start:
+
 - Web app: http://localhost:3000
 - Documentation: http://localhost:3001
 - Marketing site: http://localhost:3002
@@ -81,6 +87,7 @@ This will start:
 ## Scripts
 
 ### Development
+
 - `pnpm dev` - Start all apps in development mode
 - `pnpm build` - Build all apps and packages
 - `pnpm lint` - Lint all packages
@@ -88,35 +95,41 @@ This will start:
 - `pnpm type-check` - Type check all packages
 
 ### Database
+
 - `pnpm db:push` - Push schema changes to database
 - `pnpm db:studio` - Open Prisma Studio
 - `pnpm db:generate` - Generate Prisma client
 - `pnpm db:migrate` - Run migrations
 
 ### Deployment
+
 - `pnpm deploy:preview` - Deploy preview to Vercel
 - `pnpm deploy:production` - Deploy to production
 
 ## Development Workflow
 
 1. Create a feature branch:
+
 ```bash
 git checkout -b feature/my-feature
 ```
 
 2. Make changes and test locally:
+
 ```bash
 pnpm dev
 pnpm test
 ```
 
 3. Build and type-check:
+
 ```bash
 pnpm build
 pnpm type-check
 ```
 
 4. Create a changeset:
+
 ```bash
 pnpm changeset
 ```

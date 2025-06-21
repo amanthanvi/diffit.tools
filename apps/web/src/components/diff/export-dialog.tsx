@@ -34,28 +34,48 @@ export function ExportDialog({ open, onOpenChange }: ExportDialogProps) {
   const handleExport = async () => {
     setIsExporting(true);
     try {
-      const response = await fetch("/api/export", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          diffId: "current", // TODO: Use actual diff ID
-          format,
-          includeLineNumbers,
-          includeTimestamp,
-        }),
-      });
+      // Generate export content directly without API call since no auth required
+      const timestamp = new Date().toISOString();
+      let content: string;
+      let filename: string;
+      let mimeType: string;
 
-      if (!response.ok) {
-        throw new Error("Export failed");
+      switch (format) {
+        case "html":
+          content = generateHTMLExport();
+          filename = `diff-export-${Date.now()}.html`;
+          mimeType = "text/html";
+          break;
+        case "markdown":
+          content = generateMarkdownExport();
+          filename = `diff-export-${Date.now()}.md`;
+          mimeType = "text/markdown";
+          break;
+        case "json":
+          content = JSON.stringify({
+            leftContent,
+            rightContent,
+            timestamp: includeTimestamp ? timestamp : undefined,
+            includeLineNumbers,
+          }, null, 2);
+          filename = `diff-export-${Date.now()}.json`;
+          mimeType = "application/json";
+          break;
+        case "pdf":
+          // For now, export as HTML and let user print to PDF
+          content = generateHTMLExport();
+          filename = `diff-export-${Date.now()}.html`;
+          mimeType = "text/html";
+          break;
+        default:
+          throw new Error("Unsupported format");
       }
 
-      const blob = await response.blob();
+      const blob = new Blob([content], { type: mimeType });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `diff-export.${format}`;
+      a.download = filename;
       a.click();
       URL.revokeObjectURL(url);
 
@@ -73,6 +93,89 @@ export function ExportDialog({ open, onOpenChange }: ExportDialogProps) {
     } finally {
       setIsExporting(false);
     }
+  };
+
+  const generateHTMLExport = () => {
+    const timestamp = new Date().toISOString();
+    return `<!DOCTYPE html>
+<html>
+<head>
+  <title>Diff Export</title>
+  <style>
+    body { 
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; 
+      margin: 40px;
+      line-height: 1.6;
+    }
+    .header { border-bottom: 2px solid #e5e5e5; padding-bottom: 20px; margin-bottom: 30px; }
+    .diff-container { display: flex; gap: 20px; }
+    .diff-side { flex: 1; }
+    .diff-side h3 { color: #374151; margin-bottom: 10px; }
+    pre { 
+      background: #f8f9fa; 
+      padding: 15px; 
+      border-radius: 6px; 
+      overflow-x: auto; 
+      white-space: pre-wrap; 
+      ${includeLineNumbers ? 'counter-reset: line-number;' : ''}
+    }
+    ${includeLineNumbers ? `
+    .line-numbers pre {
+      counter-increment: line-number;
+    }
+    .line-numbers pre::before {
+      content: counter(line-number);
+      display: inline-block;
+      width: 30px;
+      text-align: right;
+      margin-right: 15px;
+      color: #6b7280;
+      border-right: 1px solid #e5e5e5;
+      padding-right: 10px;
+    }` : ''}
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Diff Export</h1>
+    ${includeTimestamp ? `<p>Generated: ${timestamp}</p>` : ''}
+  </div>
+  <div class="diff-container">
+    <div class="diff-side">
+      <h3>Original</h3>
+      <div class="${includeLineNumbers ? 'line-numbers' : ''}">
+        <pre>${leftContent || '(empty)'}</pre>
+      </div>
+    </div>
+    <div class="diff-side">
+      <h3>Modified</h3>
+      <div class="${includeLineNumbers ? 'line-numbers' : ''}">
+        <pre>${rightContent || '(empty)'}</pre>
+      </div>
+    </div>
+  </div>
+</body>
+</html>`;
+  };
+
+  const generateMarkdownExport = () => {
+    const timestamp = new Date().toISOString();
+    return `# Diff Export
+
+${includeTimestamp ? `**Generated:** ${timestamp}\n` : ''}
+
+## Original
+
+\`\`\`
+${leftContent || '(empty)'}
+\`\`\`
+
+## Modified
+
+\`\`\`
+${rightContent || '(empty)'}
+\`\`\`
+`;
   };
 
   return (

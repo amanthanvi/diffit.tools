@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   FileText, 
@@ -54,7 +55,7 @@ interface DiffStats {
   similarity: number;
 }
 
-export default function DiffPage() {
+function DiffPageContent() {
   const [leftText, setLeftText] = useState("");
   const [rightText, setRightText] = useState("");
   const [showDiff, setShowDiff] = useState(false);
@@ -67,8 +68,26 @@ export default function DiffPage() {
   const [showSettingsDialog, setShowSettingsDialog] = useState(false);
   const [showShareDialog, setShowShareDialog] = useState(false);
   
-  const { setLeftContent, setRightContent } = useDiffStore();
+  const { setLeftContent, setRightContent, setSyntax, setDiffMode } = useDiffStore();
   const { addRecentDiff } = useRecentDiffsStore();
+  const searchParams = useSearchParams();
+
+  // Handle shared diff data from URL
+  useEffect(() => {
+    const dataParam = searchParams?.get('data');
+    if (dataParam) {
+      try {
+        const sharedData = JSON.parse(atob(dataParam));
+        setLeftText(sharedData.left || '');
+        setRightText(sharedData.right || '');
+        if (sharedData.syntax) setSyntax(sharedData.syntax);
+        if (sharedData.mode) setDiffMode(sharedData.mode);
+        setShowDiff(true);
+      } catch (error) {
+        console.error('Failed to parse shared diff data:', error);
+      }
+    }
+  }, [searchParams, setSyntax, setDiffMode]);
 
   // Initialize diff store when text changes
   useEffect(() => {
@@ -439,5 +458,13 @@ export default function DiffPage() {
       <SettingsDialog open={showSettingsDialog} onOpenChange={setShowSettingsDialog} />
       <ShareDialog open={showShareDialog} onOpenChange={setShowShareDialog} />
     </div>
+  );
+}
+
+export default function DiffPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <DiffPageContent />
+    </Suspense>
   );
 }

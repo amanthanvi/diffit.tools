@@ -6,8 +6,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useDiffStore } from "@/stores/diff-store";
 import { cn } from "@/lib/utils";
 
-// Myers diff algorithm implementation
-function myersDiff(oldText: string, newText: string) {
+
+// Simple line-by-line diff for all view modes
+function simpleDiff(oldText: string, newText: string) {
   // Ensure inputs are strings
   const oldStr = String(oldText || '');
   const newStr = String(newText || '');
@@ -15,120 +16,54 @@ function myersDiff(oldText: string, newText: string) {
   const oldLines = oldStr.split('\n');
   const newLines = newStr.split('\n');
   
-  const m = oldLines.length;
-  const n = newLines.length;
-  const max = m + n;
-  
-  const v: { [key: number]: number } = { 1: 0 };
-  const trace = [];
-  
-  for (let d = 0; d <= max; d++) {
-    const snapshot: { [key: number]: number } = { ...v };
-    trace.push(snapshot);
-    
-    for (let k = -d; k <= d; k += 2) {
-      let x;
-      if (k === -d || (k !== d && v[k - 1] < v[k + 1])) {
-        x = v[k + 1];
-      } else {
-        x = v[k - 1] + 1;
-      }
-      
-      let y = x - k;
-      
-      while (x < m && y < n && oldLines[x] === newLines[y]) {
-        x++;
-        y++;
-      }
-      
-      v[k] = x;
-      
-      if (x >= m && y >= n) {
-        return buildDiff(oldLines, newLines, trace, d);
-      }
-    }
-  }
-  
-  return [];
-}
-
-function buildDiff(oldLines: string[], newLines: string[], trace: any[], d: number) {
   const diff = [];
-  let x = oldLines.length;
-  let y = newLines.length;
+  const maxLines = Math.max(oldLines.length, newLines.length);
   
-  for (let i = trace.length - 1; i >= 0; i--) {
-    const v = trace[i];
-    const k = x - y;
+  for (let i = 0; i < maxLines; i++) {
+    const oldLine = i < oldLines.length ? oldLines[i] : undefined;
+    const newLine = i < newLines.length ? newLines[i] : undefined;
     
-    let prevK;
-    if (k === -d || (k !== d && v[k - 1] < v[k + 1])) {
-      prevK = k + 1;
-    } else {
-      prevK = k - 1;
-    }
-    
-    const prevX = v[prevK];
-    const prevY = prevX - prevK;
-    
-    while (x > prevX && y > prevY) {
-      diff.unshift({
-        type: 'unchanged',
-        content: { left: oldLines[x - 1], right: newLines[y - 1] },
-        lineNumber: { left: x, right: y }
+    if (oldLine === undefined) {
+      // Line added
+      diff.push({
+        type: 'add',
+        content: { left: '', right: newLine },
+        lineNumber: { left: null, right: i + 1 }
       });
-      x--;
-      y--;
-    }
-    
-    if (d > 0) {
-      if (x > prevX) {
-        diff.unshift({
-          type: 'remove',
-          content: { left: oldLines[x - 1], right: '' },
-          lineNumber: { left: x, right: null }
-        });
-        x--;
-      } else {
-        diff.unshift({
-          type: 'add',
-          content: { left: '', right: newLines[y - 1] },
-          lineNumber: { left: null, right: y }
-        });
-        y--;
-      }
+    } else if (newLine === undefined) {
+      // Line removed
+      diff.push({
+        type: 'remove',
+        content: { left: oldLine, right: '' },
+        lineNumber: { left: i + 1, right: null }
+      });
+    } else if (oldLine !== newLine) {
+      // Line modified - show as remove + add
+      diff.push({
+        type: 'remove',
+        content: { left: oldLine, right: '' },
+        lineNumber: { left: i + 1, right: null }
+      });
+      diff.push({
+        type: 'add',
+        content: { left: '', right: newLine },
+        lineNumber: { left: null, right: i + 1 }
+      });
+    } else {
+      // Line unchanged
+      diff.push({
+        type: 'unchanged',
+        content: { left: oldLine, right: newLine },
+        lineNumber: { left: i + 1, right: i + 1 }
+      });
     }
   }
   
   return diff;
 }
 
-// Character-level diff for inline view
-function charDiff(oldText: string, newText: string) {
-  // Ensure inputs are strings
-  const oldStr = String(oldText || '');
-  const newStr = String(newText || '');
-  
-  const changes = myersDiff(oldStr, newStr);
-  return changes.map(change => {
-    if (change.type === 'unchanged') {
-      return change;
-    }
-    
-    // For modified lines, do character-level diff
-    const oldChars = (change.content.left || '').split('');
-    const newChars = (change.content.right || '').split('');
-    const charChanges = myersDiff(oldChars.join(''), newChars.join(''));
-    
-    return {
-      ...change,
-      charChanges
-    };
-  });
-}
-
 export function DiffViewer() {
-  const { leftContent, rightContent, diffMode, syntax } = useDiffStore();
+  const { leftContent, rightContent, diffMode, syntax, setDiffMode } = useDiffStore();
   const [diffs, setDiffs] = useState<any[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [diffStats, setDiffStats] = useState({ additions: 0, deletions: 0, modifications: 0 });
@@ -147,10 +82,8 @@ export function DiffViewer() {
       const leftStr = String(leftContent || '');
       const rightStr = String(rightContent || '');
       
-      // Use Myers diff algorithm for accurate diffs
-      const diffResult = diffMode === 'inline' 
-        ? charDiff(leftStr, rightStr)
-        : myersDiff(leftStr, rightStr);
+      // Use simple diff algorithm for all modes
+      const diffResult = simpleDiff(leftStr, rightStr);
       
       // Calculate statistics
       let additions = 0;
@@ -264,6 +197,7 @@ export function DiffViewer() {
         highlightSyntax={syntax !== 'text'}
         language={syntax}
         className="h-full"
+        onModeChange={setDiffMode}
       />
     </div>
   );

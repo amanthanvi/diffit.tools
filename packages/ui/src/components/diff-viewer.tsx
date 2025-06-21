@@ -45,11 +45,11 @@ const DiffViewer = React.forwardRef<HTMLDivElement, DiffViewerProps>(
     },
     ref
   ) => {
-    const [selectedMode, setSelectedMode] = React.useState(mode);
+    // Use the mode prop directly instead of internal state
+    const selectedMode = mode;
 
     const handleModeChange = (newMode: string) => {
       const validMode = newMode as 'split' | 'unified' | 'inline';
-      setSelectedMode(validMode);
       onModeChange?.(validMode);
     };
 

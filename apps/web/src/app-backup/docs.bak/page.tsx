@@ -112,7 +112,7 @@ export default function DocsPage() {
                   Contact Support →
                 </Link>
                 <Link
-                  href="https://github.com/diffit/diffit"
+                  href="https://github.com/amanthanvi/diffit.tools"
                   className="text-primary hover:underline"
                 >
                   GitHub Issues →

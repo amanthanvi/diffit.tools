@@ -25,7 +25,7 @@ export function SimpleFooter() {
                 <a href="/docs" className="hover:text-gray-900">Documentation</a>
               </li>
               <li>
-                <a href="https://github.com" className="hover:text-gray-900" target="_blank" rel="noopener noreferrer">
+                <a href="https://github.com/amanthanvi/diffit.tools" className="hover:text-gray-900" target="_blank" rel="noopener noreferrer">
                   GitHub
                 </a>
               </li>

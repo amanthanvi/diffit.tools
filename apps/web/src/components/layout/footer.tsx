@@ -21,7 +21,7 @@ const footerLinks = {
     { name: "Terms", href: "/terms" },
   ],
   Developers: [
-    { name: "GitHub", href: "https://github.com/diffit" },
+    { name: "GitHub", href: "https://github.com/amanthanvi/diffit.tools" },
     { name: "API Reference", href: "/docs/api" },
     { name: "Contributing", href: "/docs/contributing" },
     { name: "Open Source", href: "/open-source" },

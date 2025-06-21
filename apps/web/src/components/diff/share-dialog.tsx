@@ -17,6 +17,7 @@ import {
   TabsTrigger,
   useToast
 } from "@diffit/ui";
+import { useDiffStore } from "@/stores/diff-store";
 
 interface ShareDialogProps {
   open: boolean;
@@ -27,10 +28,20 @@ export function ShareDialog({ open, onOpenChange }: ShareDialogProps) {
   const [shareUrl, setShareUrl] = useState("");
   const [emails, setEmails] = useState("");
   const { toast } = useToast();
+  const { leftContent, rightContent, syntax, diffMode } = useDiffStore();
 
   const generateShareLink = async () => {
-    // TODO: Implement actual share link generation
-    const url = `${window.location.origin}/diff/shared/abc123`;
+    // Encode diff data in URL params for sharing (since no auth required)
+    const diffData = {
+      left: leftContent,
+      right: rightContent,
+      syntax,
+      mode: diffMode
+    };
+    
+    // Base64 encode to make URL sharing possible
+    const encodedData = btoa(JSON.stringify(diffData));
+    const url = `${window.location.origin}/diff?data=${encodedData}`;
     setShareUrl(url);
     return url;
   };
@@ -45,11 +56,26 @@ export function ShareDialog({ open, onOpenChange }: ShareDialogProps) {
   };
 
   const sendEmail = async () => {
-    // TODO: Implement email sending
-    toast({
-      title: "Invitations sent",
-      description: "Email invitations have been sent",
-    });
+    const url = shareUrl || (await generateShareLink());
+    const subject = "Diff Comparison - diffit.tools";
+    const body = `I'd like to share this diff comparison with you:\n\n${url}\n\nView it online at diffit.tools`;
+    
+    if (emails.trim()) {
+      // Create mailto link
+      const mailtoUrl = `mailto:${emails}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      window.open(mailtoUrl);
+      
+      toast({
+        title: "Email client opened",
+        description: "Your email client should open with the diff link",
+      });
+    } else {
+      toast({
+        title: "Email required",
+        description: "Please enter at least one email address",
+        variant: "destructive",
+      });
+    }
     onOpenChange(false);
   };
 
