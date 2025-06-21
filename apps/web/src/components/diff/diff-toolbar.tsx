@@ -163,12 +163,19 @@ export function DiffToolbar({
             <ToggleGroup 
               type="single" 
               value={diffMode} 
-              onValueChange={(value) => value && setDiffMode(value as any)}
+              onValueChange={(value) => {
+                console.log('ToggleGroup onValueChange called with:', value);
+                if (value) {
+                  console.log('Calling setDiffMode with:', value);
+                  setDiffMode(value as any);
+                }
+              }}
               className="bg-white dark:bg-gray-900 rounded-lg p-1 shadow-sm"
             >
               <ToggleGroupItem 
                 value="split" 
                 aria-label="Split view"
+                onClick={() => console.log('Split button clicked')}
                 className="data-[state=on]:bg-blue-100 dark:data-[state=on]:bg-blue-900 data-[state=on]:text-blue-700 dark:data-[state=on]:text-blue-300"
               >
                 <Columns2 className="h-4 w-4 mr-1" />
@@ -305,16 +312,16 @@ export function DiffToolbar({
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={handleExport}>
+                <DropdownMenuItem onClick={() => handleExport()}>
                   Export as PDF
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleExport}>
+                <DropdownMenuItem onClick={() => handleExport()}>
                   Export as HTML
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleExport}>
+                <DropdownMenuItem onClick={() => handleExport()}>
                   Export as Markdown
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleExport}>
+                <DropdownMenuItem onClick={() => handleExport()}>
                   Export as JSON
                 </DropdownMenuItem>
               </DropdownMenuContent>

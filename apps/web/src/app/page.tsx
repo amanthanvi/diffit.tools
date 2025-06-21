@@ -241,13 +241,10 @@ export default function HomePage() {
                     activeFeature === index && "ring-2 ring-blue-500"
                   )}
                 >
-                  <div className="absolute inset-0 bg-gradient-to-br opacity-0 group-hover:opacity-10 transition-opacity"
-                    style={{
-                      backgroundImage: `linear-gradient(to bottom right, var(--tw-gradient-stops))`,
-                      '--tw-gradient-from': feature.gradient ? feature.gradient.split(' ')[1] || '' : '',
-                      '--tw-gradient-to': feature.gradient ? feature.gradient.split(' ')[3] || '' : '',
-                    } as any}
-                  />
+                  <div className={cn(
+                    "absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity",
+                    feature.gradient && `bg-gradient-to-br ${feature.gradient}`
+                  )} />
                   
                   <div className={cn(
                     "mb-4 inline-flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-br text-white",

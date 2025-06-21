@@ -85,7 +85,10 @@ export const useDiffStore = create<DiffState & DiffActions>()(
 
       setSyntax: (syntax: string) => set({ syntax }),
       
-      setDiffMode: (diffMode: "unified" | "split" | "inline") => set({ diffMode }),
+      setDiffMode: (diffMode: "unified" | "split" | "inline") => {
+        console.log('Setting diff mode to:', diffMode);
+        set({ diffMode });
+      },
       
       setTitle: (title: string) => set({ title }),
       
