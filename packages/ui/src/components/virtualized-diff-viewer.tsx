@@ -1,9 +1,13 @@
 "use client";
 
 import * as React from 'react';
-import { FixedSizeList as List } from 'react-window';
 import { cn } from '../lib/utils';
 import { DiffLine } from './diff-viewer';
+
+// Lazy load react-window to avoid SSR issues
+const List = React.lazy(() => 
+  import('react-window').then(module => ({ default: module.FixedSizeList }))
+);
 
 export interface VirtualizedDiffViewerProps {
   lines: DiffLine[];
@@ -108,16 +112,22 @@ const VirtualizedDiffViewer = React.forwardRef<HTMLDivElement, VirtualizedDiffVi
     return (
       <div ref={ref} className={cn('diff-viewer', className)}>
         <div className="border rounded-lg overflow-hidden bg-background">
-          <List
-            height={height}
-            itemCount={lines.length}
-            itemSize={calculatedItemHeight}
-            width={width}
-            itemData={itemData}
-            overscanCount={10}
-          >
-            {Row}
-          </List>
+          <React.Suspense fallback={
+            <div className="flex items-center justify-center" style={{ height }}>
+              <span className="text-muted-foreground">Loading diff viewer...</span>
+            </div>
+          }>
+            <List
+              height={height}
+              itemCount={lines.length}
+              itemSize={calculatedItemHeight}
+              width={width}
+              itemData={itemData}
+              overscanCount={10}
+            >
+              {Row}
+            </List>
+          </React.Suspense>
         </div>
       </div>
     );

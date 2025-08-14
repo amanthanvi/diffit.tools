@@ -61,21 +61,22 @@ export function DiffViewer() {
     return diffLines;
   }, [leftContent, rightContent]);
 
+  // Temporarily disable virtualized viewer to debug production issue
   // Use virtualized viewer for large diffs (>1000 lines)
-  const isLargeDiff = lines.length > 1000;
+  // const isLargeDiff = lines.length > 1000;
   
-  if (isLargeDiff) {
-    return (
-      <VirtualizedDiffViewer
-        lines={lines}
-        mode={diffMode}
-        showLineNumbers={true}
-        highlightSyntax={false}
-        language="text"
-        height={600}
-      />
-    );
-  }
+  // if (isLargeDiff) {
+  //   return (
+  //     <VirtualizedDiffViewer
+  //       lines={lines}
+  //       mode={diffMode}
+  //       showLineNumbers={true}
+  //       highlightSyntax={false}
+  //       language="text"
+  //       height={600}
+  //     />
+  //   );
+  // }
   
   return (
     <UIDiffViewer

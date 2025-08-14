@@ -6,6 +6,7 @@ export default defineConfig({
   dts: true,
   clean: true,
   external: ['react', 'react-dom'],
+  noExternal: ['react-window'],
   sourcemap: true,
   minify: process.env.NODE_ENV === 'production',
   onSuccess: 'cp src/styles/globals.css dist/styles.css',
