@@ -83,5 +83,11 @@ const nextConfig = {
   },
 };
 
-// Temporarily disable Sentry to debug build issue
-export default nextConfig;
+// Conditionally wrap with Sentry
+export default process.env.SENTRY_DSN 
+  ? withSentryConfig(nextConfig, {
+      silent: true,
+      org: process.env.SENTRY_ORG,
+      project: process.env.SENTRY_PROJECT,
+    })
+  : nextConfig;

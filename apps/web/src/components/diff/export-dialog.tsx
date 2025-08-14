@@ -31,6 +31,25 @@ export function ExportDialog({ open, onOpenChange }: ExportDialogProps) {
   const { toast } = useToast();
   const { leftContent, rightContent } = useDiffStore();
 
+  const openPrintView = () => {
+    const data = {
+      leftContent,
+      rightContent,
+      includeLineNumbers,
+      includeTimestamp,
+      timestamp: new Date().toISOString()
+    };
+    const encodedData = btoa(JSON.stringify(data));
+    const printWindow = window.open(`/print/${encodedData}`, '_blank');
+    if (printWindow) {
+      printWindow.addEventListener('load', () => {
+        setTimeout(() => {
+          printWindow.print();
+        }, 500);
+      });
+    }
+  };
+
   const handleExport = async () => {
     setIsExporting(true);
     try {
@@ -62,11 +81,10 @@ export function ExportDialog({ open, onOpenChange }: ExportDialogProps) {
           mimeType = "application/json";
           break;
         case "pdf":
-          // For now, export as HTML and let user print to PDF
-          content = generateHTMLExport();
-          filename = `diff-export-${Date.now()}.html`;
-          mimeType = "text/html";
-          break;
+          // Open print-friendly page for PDF export
+          openPrintView();
+          onOpenChange(false);
+          return;
         default:
           throw new Error("Unsupported format");
       }

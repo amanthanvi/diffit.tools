@@ -31,7 +31,7 @@ import {
 } from "lucide-react";
 
 import { SimpleHeader } from "@/components/layout/simple-header";
-import { DiffViewer } from "@/components/diff/diff-viewer";
+import { DiffViewer } from "@/components/diff/diff-viewer-wrapper";
 import { DiffToolbar } from "@/components/diff/diff-toolbar";
 import { FileUpload } from "@/components/diff/file-upload";
 import { ExportDialog } from "@/components/diff/export-dialog";
@@ -77,12 +77,34 @@ function DiffPageContent() {
     const dataParam = searchParams?.get('data');
     if (dataParam) {
       try {
-        const sharedData = JSON.parse(atob(dataParam));
-        setLeftText(sharedData.left || '');
-        setRightText(sharedData.right || '');
-        if (sharedData.syntax) setSyntax(sharedData.syntax);
-        if (sharedData.mode) setDiffMode(sharedData.mode);
-        setShowDiff(true);
+        // Try LZ decompression first
+        let sharedData;
+        try {
+          // Import LZString dynamically to avoid SSR issues
+          import('lz-string').then(({ default: LZString }) => {
+            const decompressed = LZString.decompressFromEncodedURIComponent(dataParam);
+            if (decompressed) {
+              sharedData = JSON.parse(decompressed);
+            } else {
+              // Fallback to base64 for backward compatibility
+              sharedData = JSON.parse(atob(dataParam));
+            }
+            
+            setLeftText(sharedData.left || '');
+            setRightText(sharedData.right || '');
+            if (sharedData.syntax) setSyntax(sharedData.syntax);
+            if (sharedData.mode) setDiffMode(sharedData.mode);
+            setShowDiff(true);
+          });
+        } catch {
+          // Fallback to base64
+          sharedData = JSON.parse(atob(dataParam));
+          setLeftText(sharedData.left || '');
+          setRightText(sharedData.right || '');
+          if (sharedData.syntax) setSyntax(sharedData.syntax);
+          if (sharedData.mode) setDiffMode(sharedData.mode);
+          setShowDiff(true);
+        }
       } catch (error) {
         console.error('Failed to parse shared diff data:', error);
       }

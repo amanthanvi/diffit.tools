@@ -30,9 +30,43 @@
       "description": "Create a new diff comparison"
     },
     {
-      "name": "Dashboard",
-      "url": "/dashboard",
-      "description": "View your dashboard"
+      "name": "Folder Diff",
+      "url": "/folder-diff",
+      "description": "Compare folders and directories"
+    },
+    {
+      "name": "Recent Diffs",
+      "url": "/",
+      "description": "View recent comparisons"
     }
+  ],
+  "share_target": {
+    "action": "/diff",
+    "method": "GET",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  },
+  "prefer_related_applications": false,
+  "related_applications": [],
+  "screenshots": [
+    {
+      "src": "/screenshots/diff-view.png",
+      "type": "image/png",
+      "sizes": "1280x720"
+    },
+    {
+      "src": "/screenshots/folder-diff.png",
+      "type": "image/png",
+      "sizes": "1280x720"
+    }
+  ],
+  "features": [
+    "WebAssembly",
+    "File System Access API",
+    "Web Share API",
+    "Clipboard API"
   ]
 }

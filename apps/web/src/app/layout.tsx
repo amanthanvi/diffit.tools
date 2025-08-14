@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "@/styles/app.css";
 import { ThemeProvider } from "@/providers/theme-provider";
+import { PWAInstaller } from "@/components/pwa-installer";
 
 export const metadata: Metadata = {
   title: "Diffit - Smart Text Comparison Tool",
@@ -22,6 +23,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           {children}
+          <PWAInstaller />
         </ThemeProvider>
       </body>
     </html>

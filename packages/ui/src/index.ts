@@ -19,10 +19,13 @@ export * from './components/tabs';
 export * from './components/toggle-group';
 export * from './components/radio-group';
 export * from './components/scroll-area';
+export * from './components/progress';
 
 // Advanced Components
 export * from './components/command-palette';
 export * from './components/diff-viewer';
+export * from './components/virtualized-diff-viewer';
+export * from './components/diff-insights';
 export * from './components/file-browser';
 export * from './components/code-editor';
 export * from './components/theme-customizer';
