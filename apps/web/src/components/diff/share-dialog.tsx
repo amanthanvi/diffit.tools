@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { Copy, Link2, Mail, MessageSquare } from "lucide-react";
-import LZString from "lz-string";
 import {
   Dialog,
   DialogContent,
@@ -40,9 +39,9 @@ export function ShareDialog({ open, onOpenChange }: ShareDialogProps) {
       mode: diffMode
     };
     
-    // Use LZ compression for better URL size management
-    const compressed = LZString.compressToEncodedURIComponent(JSON.stringify(diffData));
-    const url = `${window.location.origin}/diff?data=${compressed}`;
+    // Base64 encode to make URL sharing possible
+    const encodedData = btoa(JSON.stringify(diffData));
+    const url = `${window.location.origin}/diff?data=${encodedData}`;
     
     // Check if URL is too long (> 2000 chars), warn user
     if (url.length > 2000) {

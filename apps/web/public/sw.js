@@ -4,9 +4,7 @@ const urlsToCache = [
   '/',
   '/diff',
   '/folder-diff',
-  '/manifest.json',
-  '/icon-192.png',
-  '/icon-512.png'
+  '/manifest.json'
 ];
 
 // Specific caches for different resource types
