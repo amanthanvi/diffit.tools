@@ -5,6 +5,7 @@
   "description": "Diffit.tools v2.0 - Modern diff comparison platform",
   "author": "Diffit.tools Team",
   "license": "MIT",
+  "packageManager": "npm@10.0.0",
   "engines": {
     "node": "20.x"
   },

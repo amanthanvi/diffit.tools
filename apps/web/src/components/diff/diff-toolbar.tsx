@@ -164,10 +164,8 @@ export function DiffToolbar({
               type="single" 
               value={diffMode} 
               onValueChange={(value) => {
-                console.log('ToggleGroup onValueChange called with:', value);
                 if (value) {
-                  console.log('Calling setDiffMode with:', value);
-                  setDiffMode(value as any);
+                  setDiffMode(value as 'split' | 'unified' | 'inline');
                 }
               }}
               className="bg-white dark:bg-gray-900 rounded-lg p-1 shadow-sm"
@@ -175,7 +173,6 @@ export function DiffToolbar({
               <ToggleGroupItem 
                 value="split" 
                 aria-label="Split view"
-                onClick={() => console.log('Split button clicked')}
                 className="data-[state=on]:bg-blue-100 dark:data-[state=on]:bg-blue-900 data-[state=on]:text-blue-700 dark:data-[state=on]:text-blue-300"
               >
                 <Columns2 className="h-4 w-4 mr-1" />
