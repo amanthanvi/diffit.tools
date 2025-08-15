@@ -22,15 +22,17 @@ export interface VirtualizedDiffViewerProps {
   onModeChange?: (mode: 'split' | 'unified' | 'inline') => void;
 }
 
-const Row = React.memo(({ index, style, data }: {
+interface RowData {
+  lines: DiffLine[];
+  showLineNumbers: boolean;
+  mode: 'split' | 'unified' | 'inline';
+}
+
+const Row = React.memo<{
   index: number;
   style: React.CSSProperties;
-  data: {
-    lines: DiffLine[];
-    showLineNumbers: boolean;
-    mode: 'split' | 'unified' | 'inline';
-  };
-}) => {
+  data: RowData;
+}>(({ index, style, data }) => {
   const line = data.lines[index];
   
   const renderLineNumber = (lineNum?: number) => {
@@ -97,7 +99,7 @@ const VirtualizedDiffViewer = React.forwardRef<HTMLDivElement, VirtualizedDiffVi
     },
     ref
   ) => {
-    const itemData = React.useMemo(
+    const itemData: RowData = React.useMemo(
       () => ({
         lines,
         showLineNumbers,
