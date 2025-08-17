@@ -5,28 +5,14 @@ import { Card, CardContent, CardHeader, CardTitle } from './card';
 import { Progress } from './progress';
 import { Badge } from './badge';
 import { cn } from '../lib/utils';
-
-export interface DiffInsights {
-  totalChanges: number;
-  additions: number;
-  deletions: number;
-  modifications: number;
-  similarity: number;
-  hunks: number;
-  changeIntensity?: number[];
-  semantic?: {
-    functionsAdded: string[];
-    functionsRemoved: string[];
-    importsChanged: number;
-  };
-}
+import type { DiffInsights } from '../types/diff';
 
 export interface DiffInsightsProps {
   insights: DiffInsights;
   className?: string;
 }
 
-export const DiffInsights = React.forwardRef<HTMLDivElement, DiffInsightsProps>(
+export const DiffInsightsPanel = React.forwardRef<HTMLDivElement, DiffInsightsProps>(
   ({ insights, className }, ref) => {
     const changeRate = insights.totalChanges > 0 
       ? ((insights.modifications / insights.totalChanges) * 100).toFixed(1)
@@ -168,4 +154,4 @@ export const DiffInsights = React.forwardRef<HTMLDivElement, DiffInsightsProps>(
   }
 );
 
-DiffInsights.displayName = 'DiffInsights';
+DiffInsightsPanel.displayName = 'DiffInsightsPanel';

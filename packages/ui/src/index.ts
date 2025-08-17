@@ -20,12 +20,21 @@ export * from './components/toggle-group';
 export * from './components/radio-group';
 export * from './components/scroll-area';
 export * from './components/progress';
+export * from './components/alert';
 
 // Advanced Components
 export * from './components/command-palette';
 export * from './components/diff-viewer';
 export * from './components/virtualized-diff-viewer';
+export * from './components/enhanced-diff-viewer';
 export * from './components/diff-insights';
+export * from './components/diff-filters';
+export * from './components/file-tree';
+export * from './components/folder-diff-viewer';
+export * from './components/share-dialog';
+export * from './components/share-button';
+export * from './components/export-dialog';
+export * from './components/export-button';
 export * from './components/file-browser';
 export * from './components/code-editor';
 export * from './components/theme-customizer';
@@ -38,6 +47,11 @@ export * from './hooks/use-toast';
 // Utilities
 export * from './lib/utils';
 export * from './lib/animations';
+export * from './lib/share-service';
+export * from './lib/export-service';
 
 // Re-export types
 export type { Theme } from './hooks/use-theme';
+export type { DiffLine, DiffHunk, DiffInsights, FileStatus } from './types/diff';
+export type { DiffOptions } from './components/diff-filters';
+export type { FileNode } from './components/file-tree';

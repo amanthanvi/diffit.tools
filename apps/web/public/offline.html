@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Diffit - Offline</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      color: #333;
+    }
+    
+    .offline-container {
+      background: white;
+      border-radius: 1rem;
+      padding: 3rem;
+      max-width: 500px;
+      width: 100%;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      text-align: center;
+      animation: slideUp 0.5s ease-out;
+    }
+    
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .offline-icon {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 1.5rem;
+      background: #f3f4f6;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .offline-icon svg {
+      width: 40px;
+      height: 40px;
+      color: #6b7280;
+    }
+    
+    h1 {
+      font-size: 1.875rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: #111827;
+    }
+    
+    p {
+      color: #6b7280;
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+    }
+    
+    .features {
+      text-align: left;
+      margin: 2rem 0;
+      padding: 1.5rem;
+      background: #f9fafb;
+      border-radius: 0.5rem;
+    }
+    
+    .features h2 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: #374151;
+    }
+    
+    .features ul {
+      list-style: none;
+    }
+    
+    .features li {
+      padding: 0.5rem 0;
+      color: #4b5563;
+      display: flex;
+      align-items: center;
+    }
+    
+    .features li::before {
+      content: "✓";
+      color: #10b981;
+      font-weight: bold;
+      margin-right: 0.5rem;
+    }
+    
+    .cached-diffs {
+      margin-top: 2rem;
+      padding-top: 2rem;
+      border-top: 1px solid #e5e7eb;
+    }
+    
+    .cached-diffs h2 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: #374151;
+    }
+    
+    .diff-list {
+      text-align: left;
+    }
+    
+    .diff-item {
+      padding: 0.75rem;
+      margin-bottom: 0.5rem;
+      background: #f9fafb;
+      border-radius: 0.375rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    
+    .diff-item:hover {
+      background: #f3f4f6;
+    }
+    
+    .diff-title {
+      font-weight: 500;
+      color: #111827;
+      margin-bottom: 0.25rem;
+    }
+    
+    .diff-date {
+      font-size: 0.875rem;
+      color: #6b7280;
+    }
+    
+    .retry-button {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      padding: 0.75rem 2rem;
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    
+    .retry-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    }
+    
+    .retry-button:active {
+      transform: translateY(0);
+    }
+    
+    @media (prefers-color-scheme: dark) {
+      body {
+        background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+      }
+      
+      .offline-container {
+        background: #1e293b;
+        color: #f1f5f9;
+      }
+      
+      h1 {
+        color: #f1f5f9;
+      }
+      
+      p {
+        color: #94a3b8;
+      }
+      
+      .features {
+        background: #0f172a;
+      }
+      
+      .features h2,
+      .cached-diffs h2 {
+        color: #cbd5e1;
+      }
+      
+      .features li {
+        color: #94a3b8;
+      }
+      
+      .diff-item {
+        background: #0f172a;
+      }
+      
+      .diff-item:hover {
+        background: #1e293b;
+      }
+      
+      .diff-title {
+        color: #f1f5f9;
+      }
+      
+      .offline-icon {
+        background: #0f172a;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="offline-container">
+    <div class="offline-icon">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+              d="M18.364 5.636a9 9 0 010 12.728m0 0l-2.829-2.829m2.829 2.829L21 21M15.536 8.464a5 5 0 010 7.072m0 0l-2.829-2.829m-4.243 2.829a4.978 4.978 0 01-1.414-2.83m-1.414 5.658a9 9 0 01-2.167-9.238m7.824 2.167a1 1 0 111.414 1.414m-1.414-1.414L3 3m8.293 8.293l1.414 1.414">
+        </path>
+      </svg>
+    </div>
+    
+    <h1>You're Offline</h1>
+    <p>No worries! Diffit.tools works offline for most features.</p>
+    
+    <div class="features">
+      <h2>Available Offline:</h2>
+      <ul>
+        <li>View and edit cached diffs</li>
+        <li>Create new text comparisons</li>
+        <li>Export diffs to various formats</li>
+        <li>Access your diff history</li>
+      </ul>
+    </div>
+    
+    <div class="cached-diffs" id="cached-diffs" style="display: none;">
+      <h2>Your Cached Diffs:</h2>
+      <div class="diff-list" id="diff-list"></div>
+    </div>
+    
+    <button class="retry-button" onclick="retryConnection()">
+      Retry Connection
+    </button>
+  </div>
+  
+  <script>
+    // Check for cached diffs
+    async function loadCachedDiffs() {
+      if ('caches' in window) {
+        try {
+          const cache = await caches.open('diffit-diffs-v2.1.0');
+          const requests = await cache.keys();
+          
+          const diffs = [];
+          for (const request of requests) {
+            if (request.url.includes('/cached-diff/')) {
+              const response = await cache.match(request);
+              if (response) {
+                const data = await response.json();
+                diffs.push(data);
+              }
+            }
+          }
+          
+          if (diffs.length > 0) {
+            displayCachedDiffs(diffs);
+          }
+        } catch (error) {
+          console.error('Failed to load cached diffs:', error);
+        }
+      }
+    }
+    
+    function displayCachedDiffs(diffs) {
+      const container = document.getElementById('cached-diffs');
+      const list = document.getElementById('diff-list');
+      
+      if (diffs.length === 0) return;
+      
+      container.style.display = 'block';
+      list.innerHTML = '';
+      
+      diffs.forEach(diff => {
+        const item = document.createElement('div');
+        item.className = 'diff-item';
+        item.innerHTML = `
+          <div class="diff-title">${diff.title || 'Untitled Diff'}</div>
+          <div class="diff-date">Cached: ${new Date(diff.cachedAt).toLocaleString()}</div>
+        `;
+        item.onclick = () => viewDiff(diff.id);
+        list.appendChild(item);
+      });
+    }
+    
+    function viewDiff(id) {
+      // Navigate to the diff page with the cached ID
+      window.location.href = `/diff?cached=${id}`;
+    }
+    
+    function retryConnection() {
+      window.location.reload();
+    }
+    
+    // Check online status
+    window.addEventListener('online', () => {
+      window.location.reload();
+    });
+    
+    // Load cached diffs on page load
+    loadCachedDiffs();
+    
+    // Register service worker if not already registered
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw-enhanced.js')
+        .catch(error => console.error('Service Worker registration failed:', error));
+    }
+  </script>
+</body>
+</html>

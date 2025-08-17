@@ -5,9 +5,12 @@
   "theme_color": "#000000",
   "background_color": "#ffffff",
   "display": "standalone",
-  "orientation": "portrait",
+  "orientation": "any",
   "scope": "/",
-  "start_url": "/",
+  "start_url": "/?source=pwa",
+  "id": "diffit-tools-pwa",
+  "lang": "en",
+  "dir": "ltr",
   "icons": [
     {
       "src": "/icon-192.png",

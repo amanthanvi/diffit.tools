@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
-import "@/styles/app.css";
+// import "@/styles/app.css";
 import { ThemeProvider } from "@/providers/theme-provider";
+import { TRPCProvider } from "@/providers/trpc-provider";
 import { PWAInstaller } from "@/components/pwa-installer";
 
 export const metadata: Metadata = {
@@ -16,15 +17,17 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          {children}
-          <PWAInstaller />
-        </ThemeProvider>
+        <TRPCProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            {children}
+            <PWAInstaller />
+          </ThemeProvider>
+        </TRPCProvider>
       </body>
     </html>
   );

@@ -13,14 +13,8 @@ import {
 } from './select';
 import { Card } from './card';
 
-export interface DiffLine {
-  type: 'added' | 'removed' | 'unchanged' | 'header';
-  content: string;
-  lineNumber?: {
-    old?: number;
-    new?: number;
-  };
-}
+// Import DiffLine from shared types
+import type { DiffLine } from '../types/diff';
 
 export interface DiffViewerProps {
   lines: DiffLine[];

@@ -2,7 +2,8 @@
 
 import * as React from 'react';
 import { cn } from '../lib/utils';
-import { DiffLine } from './diff-viewer';
+import type { DiffLine } from '../types/diff';
+import type { ListChildComponentProps } from 'react-window';
 
 // Lazy load react-window to avoid SSR issues
 const List = React.lazy(() => 
@@ -28,11 +29,7 @@ interface RowData {
   mode: 'split' | 'unified' | 'inline';
 }
 
-const Row = React.memo<{
-  index: number;
-  style: React.CSSProperties;
-  data: RowData;
-}>(({ index, style, data }) => {
+const Row: React.FC<ListChildComponentProps<RowData>> = ({ index, style, data }) => {
   const line = data.lines[index];
   
   const renderLineNumber = (lineNum?: number) => {
@@ -79,9 +76,7 @@ const Row = React.memo<{
       </span>
     </div>
   );
-});
-
-Row.displayName = 'DiffRow';
+};
 
 const VirtualizedDiffViewer = React.forwardRef<HTMLDivElement, VirtualizedDiffViewerProps>(
   (
@@ -127,7 +122,7 @@ const VirtualizedDiffViewer = React.forwardRef<HTMLDivElement, VirtualizedDiffVi
               itemData={itemData}
               overscanCount={10}
             >
-              {Row}
+              {Row as any}
             </List>
           </React.Suspense>
         </div>

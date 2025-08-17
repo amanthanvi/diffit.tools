@@ -420,6 +420,9 @@ export class DiffFactory {
   }
 }
 
+// Export folder comparison utilities
+export { FolderComparator, type FolderCompareOptions, type FileComparisonResult } from './folder-compare';
+
 // Export main instances for easy usage
 export const diffEngine = new DiffEngineWrapper();
 export const diffWorker = new DiffWorker();
