@@ -86,9 +86,10 @@ export const useServiceWorker = ({
         onSuccess?.();
 
         // Check for updates
-        if (autoUpdate) {
-          registration.addEventListener('updatefound', () => {
-            const newWorker = registration.installing;
+        if (autoUpdate && registration) {
+          const reg = registration; // Store in local variable for TypeScript
+          reg.addEventListener('updatefound', () => {
+            const newWorker = reg.installing;
             if (!newWorker) return;
 
             newWorker.addEventListener('statechange', () => {
@@ -101,9 +102,10 @@ export const useServiceWorker = ({
         }
 
         // Check for updates periodically
-        if (autoUpdate) {
+        if (autoUpdate && registration) {
+          const reg = registration; // Store in local variable for TypeScript
           const interval = setInterval(() => {
-            registration?.update();
+            reg.update();
           }, 60 * 60 * 1000); // Check every hour
 
           return () => clearInterval(interval);

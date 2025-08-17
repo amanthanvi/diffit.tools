@@ -3,13 +3,9 @@
 import { useState } from "react";
 import { 
   AccessibilityToggle,
-  AccessibilitySettings,
   AriaLiveRegion,
   ScreenReaderOnly,
   VisuallyHidden,
-  LoadingAnnouncer,
-  ValidationAnnouncer,
-  NotificationAnnouncer,
   Card,
   CardContent,
   CardHeader,
@@ -25,12 +21,6 @@ import {
   TabsList,
   TabsTrigger,
   Switch,
-} from "@diffit/ui";
-import { 
-  useAccessibility,
-  useAnnounce,
-  useFocusManagement,
-  useKeyboardNavigation,
 } from "@diffit/ui";
 import {
   Eye,
@@ -50,23 +40,11 @@ import {
 export default function TestAccessibilityPage() {
   const [showSettings, setShowSettings] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [notification, setNotification] = useState(null);
-  const [formErrors, setFormErrors] = useState({});
+  const [notification, setNotification] = useState<any>(null);
+  const [formErrors, setFormErrors] = useState<any>({});
   const [testInput, setTestInput] = useState("");
   
-  const { settings, isHighContrast, isReducedMotion, announce } = useAccessibility();
-  const { saveFocus, restoreFocus, focusFirst } = useFocusManagement();
-
-  // Keyboard navigation handlers
-  useKeyboardNavigation({
-    'Alt+s': () => setShowSettings(true),
-    'Alt+a': () => announce('Accessibility settings opened', 'polite'),
-    'Alt+t': () => runAccessibilityTest(),
-    'Escape': () => setShowSettings(false),
-  });
-
   const runAccessibilityTest = () => {
-    announce('Running accessibility test', 'polite');
     setIsLoading(true);
     
     setTimeout(() => {
@@ -76,12 +54,11 @@ export default function TestAccessibilityPage() {
         message: 'Accessibility test completed successfully',
         type: 'success',
       });
-      announce('Test completed', 'assertive');
     }, 2000);
   };
 
   const testFormValidation = () => {
-    const errors = {};
+    const errors: any = {};
     if (!testInput) {
       errors.testInput = 'This field is required';
     }
@@ -96,25 +73,8 @@ export default function TestAccessibilityPage() {
     }
   };
 
-  const testFocusManagement = () => {
-    saveFocus();
-    const dialog = document.querySelector('[role="dialog"]');
-    if (dialog) {
-      focusFirst(dialog);
-    }
-    setTimeout(() => {
-      restoreFocus();
-    }, 3000);
-  };
-
   return (
     <div className="container mx-auto py-8">
-      {/* Skip Links */}
-      <div className="skip-links">
-        <a href="#main-content" className="skip-link">Skip to main content</a>
-        <a href="#settings" className="skip-link">Skip to settings</a>
-      </div>
-
       <div className="mb-6 flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold mb-2">Accessibility Testing</h1>
@@ -123,31 +83,6 @@ export default function TestAccessibilityPage() {
           </p>
         </div>
         <AccessibilityToggle />
-      </div>
-
-      {/* Status Indicators */}
-      <div className="flex gap-2 mb-6">
-        {isHighContrast && (
-          <Badge variant="secondary" className="gap-1">
-            <Contrast className="h-3 w-3" />
-            High Contrast
-          </Badge>
-        )}
-        {isReducedMotion && (
-          <Badge variant="secondary" className="gap-1">
-            <Move className="h-3 w-3" />
-            Reduced Motion
-          </Badge>
-        )}
-        {settings.screenReaderMode && (
-          <Badge variant="secondary" className="gap-1">
-            <Volume2 className="h-3 w-3" />
-            Screen Reader Mode
-          </Badge>
-        )}
-        <Badge variant="outline">
-          Font: {settings.fontSize}
-        </Badge>
       </div>
 
       <main id="main-content">
@@ -201,7 +136,7 @@ export default function TestAccessibilityPage() {
                 <Alert>
                   <Info className="h-4 w-4" />
                   <AlertDescription>
-                    Press <kbd>Alt+S</kbd> to open accessibility settings
+                    Use the settings button in the top right to configure accessibility options
                   </AlertDescription>
                 </Alert>
               </CardContent>
@@ -241,10 +176,6 @@ export default function TestAccessibilityPage() {
                     <li><kbd>Escape</kbd> - Close dialogs</li>
                   </ul>
                 </div>
-
-                <Button onClick={testFocusManagement}>
-                  Test Focus Management
-                </Button>
               </CardContent>
             </Card>
           </TabsContent>
@@ -256,24 +187,6 @@ export default function TestAccessibilityPage() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-4">
-                  <div>
-                    <Label htmlFor="announce-test">Test Announcements</Label>
-                    <div className="flex gap-2 mt-2">
-                      <Button
-                        onClick={() => announce('This is a polite announcement', 'polite')}
-                        variant="outline"
-                      >
-                        Polite Announce
-                      </Button>
-                      <Button
-                        onClick={() => announce('This is an assertive announcement!', 'assertive')}
-                        variant="outline"
-                      >
-                        Assertive Announce
-                      </Button>
-                    </div>
-                  </div>
-
                   <div className="p-4 border rounded-lg">
                     <h4 className="font-semibold mb-2">Hidden Content Examples</h4>
                     <p>
@@ -296,14 +209,6 @@ export default function TestAccessibilityPage() {
                     </VisuallyHidden>
                   </div>
                 </div>
-
-                <LoadingAnnouncer
-                  isLoading={isLoading}
-                  loadingMessage="Loading test data..."
-                  completeMessage="Test data loaded"
-                />
-
-                <NotificationAnnouncer notification={notification} />
               </CardContent>
             </Card>
           </TabsContent>
@@ -371,8 +276,6 @@ export default function TestAccessibilityPage() {
                     </Button>
                   </div>
                 </form>
-
-                <ValidationAnnouncer errors={formErrors} />
               </CardContent>
             </Card>
           </TabsContent>
@@ -410,12 +313,6 @@ export default function TestAccessibilityPage() {
       <AriaLiveRegion 
         message={notification?.message}
         priority={notification?.type === 'error' ? 'assertive' : 'polite'}
-      />
-
-      {/* Accessibility Settings Dialog */}
-      <AccessibilitySettings 
-        open={showSettings} 
-        onOpenChange={setShowSettings}
       />
     </div>
   );

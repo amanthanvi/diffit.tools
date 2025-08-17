@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 
-export interface AccessibilitySettings {
+export interface AccessibilityConfig {
   // Visual
   highContrast: boolean;
   reducedMotion: boolean;
@@ -30,8 +30,8 @@ export interface AccessibilitySettings {
 }
 
 export interface AccessibilityContextValue {
-  settings: AccessibilitySettings;
-  updateSettings: (settings: Partial<AccessibilitySettings>) => void;
+  settings: AccessibilityConfig;
+  updateSettings: (settings: Partial<AccessibilityConfig>) => void;
   resetSettings: () => void;
   announce: (message: string, priority?: 'polite' | 'assertive') => void;
   setFocusTrap: (enabled: boolean) => void;
@@ -40,7 +40,7 @@ export interface AccessibilityContextValue {
   isScreenReaderActive: boolean;
 }
 
-const defaultSettings: AccessibilitySettings = {
+const defaultSettings: AccessibilityConfig = {
   highContrast: false,
   reducedMotion: false,
   fontSize: 'medium',
@@ -70,7 +70,7 @@ export const useAccessibility = () => {
 
 export interface AccessibilityProviderProps {
   children: React.ReactNode;
-  defaultSettings?: Partial<AccessibilitySettings>;
+  defaultSettings?: Partial<AccessibilityConfig>;
   storageKey?: string;
 }
 
@@ -79,7 +79,7 @@ export const AccessibilityProvider: React.FC<AccessibilityProviderProps> = ({
   defaultSettings: customDefaults,
   storageKey = 'diffit-a11y-settings',
 }) => {
-  const [settings, setSettings] = React.useState<AccessibilitySettings>(() => {
+  const [settings, setSettings] = React.useState<AccessibilityConfig>(() => {
     // Load from localStorage if available
     if (typeof window !== 'undefined') {
       const stored = localStorage.getItem(storageKey);
@@ -170,7 +170,7 @@ export const AccessibilityProvider: React.FC<AccessibilityProviderProps> = ({
     root.setAttribute('data-screen-reader', settings.screenReaderMode.toString());
   }, [settings]);
 
-  const updateSettings = React.useCallback((updates: Partial<AccessibilitySettings>) => {
+  const updateSettings = React.useCallback((updates: Partial<AccessibilityConfig>) => {
     setSettings(prev => ({ ...prev, ...updates }));
   }, []);
 
@@ -285,7 +285,7 @@ const SkipLinks: React.FC<{ enabled: boolean }> = ({ enabled }) => {
       <a href="#search" className="skip-link">
         Skip to search
       </a>
-      <style jsx>{`
+      <style dangerouslySetInnerHTML={{ __html: `
         .skip-links {
           position: absolute;
           top: 0;
@@ -317,7 +317,7 @@ const SkipLinks: React.FC<{ enabled: boolean }> = ({ enabled }) => {
           overflow: visible;
           z-index: 10000;
         }
-      `}</style>
+      `}} />
     </div>
   );
 };

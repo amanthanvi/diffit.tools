@@ -35,6 +35,9 @@ export * from './components/share-dialog';
 export * from './components/share-button';
 export * from './components/export-dialog';
 export * from './components/export-button';
+export * from './components/pwa-install-prompt';
+export * from './components/aria-live-region';
+export * from './components/accessibility-settings';
 export * from './components/file-browser';
 export * from './components/code-editor';
 export * from './components/theme-customizer';
@@ -43,12 +46,17 @@ export * from './components/toolbar';
 // Hooks
 export * from './hooks/use-theme';
 export * from './hooks/use-toast';
+export * from './hooks/use-service-worker';
 
 // Utilities
 export * from './lib/utils';
 export * from './lib/animations';
 export * from './lib/share-service';
 export * from './lib/export-service';
+export * from './lib/keyboard-navigation';
+
+// Providers
+export * from './providers/accessibility-provider';
 
 // Re-export types
 export type { Theme } from './hooks/use-theme';

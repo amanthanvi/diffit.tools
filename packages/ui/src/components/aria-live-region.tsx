@@ -59,7 +59,7 @@ export const AriaLiveRegion: React.FC<AriaLiveRegionProps> = ({
       role={priority === 'off' ? undefined : 'status'}
       aria-live={priority}
       aria-atomic={atomic}
-      aria-relevant={relevantValue}
+      aria-relevant={relevantValue as any}
       className={cn('sr-only', className)}
     >
       {currentMessage}
