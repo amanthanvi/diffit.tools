@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-// import "@/styles/app.css";
+import "@/styles/app.css";
 import { ThemeProvider } from "@/providers/theme-provider";
 import { TRPCProvider } from "@/providers/trpc-provider";
 import { PWAInstaller } from "@/components/pwa-installer";
