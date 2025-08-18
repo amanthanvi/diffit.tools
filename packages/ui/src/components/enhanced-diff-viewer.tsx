@@ -16,7 +16,8 @@ import {
 } from 'lucide-react';
 
 // Import react-window for virtualization
-import { FixedSizeList as List, ListChildComponentProps } from 'react-window';
+import { FixedSizeList as List } from 'react-window';
+import type { ListChildComponentProps } from 'react-window';
 import type { DiffLine, DiffHunk } from '../types/diff';
 
 export { type DiffLine, type DiffHunk } from '../types/diff';
@@ -40,7 +41,7 @@ interface RowData {
 }
 
 // Row component for virtualized list
-const Row = React.memo<ListChildComponentProps<RowData>>(({ index, style, data }) => {
+const Row = React.memo(({ index, style, data }: ListChildComponentProps<RowData>) => {
   const line = data.lines[index];
   
   const renderLineNumber = (lineNum?: number) => {
@@ -215,7 +216,7 @@ const EnhancedDiffViewer = React.forwardRef<HTMLDivElement, EnhancedDiffViewerPr
   ) => {
     const [currentLine, setCurrentLine] = React.useState(0);
     const [isFullscreen, setIsFullscreen] = React.useState(false);
-    const listRef = React.useRef<List>(null);
+    const listRef = React.useRef<any>(null);
     
     // Calculate hunks for minimap
     const hunks = React.useMemo(() => {
@@ -305,7 +306,7 @@ const EnhancedDiffViewer = React.forwardRef<HTMLDivElement, EnhancedDiffViewerPr
     const visibleEnd = Math.min(currentLine + itemsPerPage, lines.length);
     
     // Decide whether to use virtualization
-    const useVirtualization = lines.length > virtualizeThreshold;
+    const useVirtualization = lines.length > virtualizeThreshold && typeof window !== 'undefined' && List;
     
     const rowData: RowData = {
       lines,
@@ -389,7 +390,7 @@ const EnhancedDiffViewer = React.forwardRef<HTMLDivElement, EnhancedDiffViewerPr
         <div className="flex">
           {/* Diff viewer */}
           <div className="flex-1 overflow-hidden">
-            {useVirtualization ? (
+            {useVirtualization && List ? (
               <List
                 ref={listRef}
                 height={height}
@@ -399,19 +400,60 @@ const EnhancedDiffViewer = React.forwardRef<HTMLDivElement, EnhancedDiffViewerPr
                 itemData={rowData}
                 onScroll={handleScroll}
               >
-                {Row as any}
+                {Row}
               </List>
             ) : (
               <ScrollArea className="h-[600px]">
                 <div className="font-mono text-sm">
-                  {lines.map((line, index) => (
-                    <Row
-                      key={index}
-                      index={index}
-                      style={{ height: 24, width: '100%' }}
-                      data={rowData}
-                    />
-                  ))}
+                  {lines.map((line, index) => {
+                    const lineElement = (
+                      <div
+                        key={index}
+                        className={cn(
+                          'px-4 py-0.5 font-mono text-sm flex items-center',
+                          {
+                            'bg-green-50 dark:bg-green-950/20 border-l-4 border-green-500': line.type === 'added',
+                            'bg-red-50 dark:bg-red-950/20 border-l-4 border-red-500': line.type === 'removed',
+                            'bg-yellow-50 dark:bg-yellow-950/20 border-l-4 border-yellow-500': line.type === 'modified',
+                            'bg-muted/50 font-semibold': line.type === 'header',
+                            'hover:bg-muted/30': line.type === 'unchanged',
+                          }
+                        )}
+                      >
+                        {showLineNumbers && (
+                          <>
+                            {line.lineNumber?.old && (
+                              <span className="inline-block w-12 text-right pr-2 text-muted-foreground select-none text-xs font-mono">
+                                {line.lineNumber.old}
+                              </span>
+                            )}
+                            {line.lineNumber?.new && (
+                              <span className="inline-block w-12 text-right pr-2 text-muted-foreground select-none text-xs font-mono">
+                                {line.lineNumber.new}
+                              </span>
+                            )}
+                          </>
+                        )}
+                        <span
+                          className={cn('pr-2 select-none', {
+                            'text-green-700 dark:text-green-400': line.type === 'added',
+                            'text-red-700 dark:text-red-400': line.type === 'removed',
+                            'text-yellow-700 dark:text-yellow-400': line.type === 'modified',
+                          })}
+                        >
+                          {line.type === 'added' && '+'}
+                          {line.type === 'removed' && '-'}
+                          {line.type === 'modified' && '±'}
+                          {line.type === 'unchanged' && ' '}
+                          {line.type === 'header' && ' '}
+                        </span>
+                        <span className="flex-1 overflow-hidden text-ellipsis whitespace-pre">
+                          {line.content}
+                        </span>
+                      </div>
+                    );
+                    return lineElement;
+                  })}
                 </div>
               </ScrollArea>
             )}

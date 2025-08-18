@@ -26,7 +26,9 @@ export * from './components/alert';
 export * from './components/command-palette';
 export * from './components/diff-viewer';
 export * from './components/virtualized-diff-viewer';
-export * from './components/enhanced-diff-viewer';
+// Use simplified version temporarily to avoid react-window issues
+export { EnhancedDiffViewer } from './components/enhanced-diff-viewer-simple';
+export type { EnhancedDiffViewerProps } from './components/enhanced-diff-viewer-simple';
 export * from './components/diff-insights';
 export * from './components/diff-filters';
 export * from './components/file-tree';
