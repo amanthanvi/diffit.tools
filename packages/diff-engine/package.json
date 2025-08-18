@@ -21,7 +21,7 @@
     "dev": "echo 'Diff engine in dev mode'",
     "build:wasm": "echo 'Skipping WASM build - using JS stub'",
     "build:wasm:dev": "echo 'Skipping WASM build - using JS stub'",
-    "build:ts": "echo 'Using pre-built JS stub'",
+    "build:ts": "./build.sh",
     "build": "npm run build:wasm && npm run build:ts",
     "build:dev": "npm run build:wasm:dev && npm run build:ts",
     "test:rust": "cargo test",
