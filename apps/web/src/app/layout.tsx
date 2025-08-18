@@ -4,6 +4,9 @@ import { ThemeProvider } from "@/providers/theme-provider";
 import { TRPCProvider } from "@/providers/trpc-provider";
 import { PWAInstaller } from "@/components/pwa-installer";
 
+// Force dynamic rendering for all pages to avoid SSR issues
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: "Diffit - Smart Text Comparison Tool",
   description: "Compare text, files, and documents with advanced diff visualization and collaboration features.",
