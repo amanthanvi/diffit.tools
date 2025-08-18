@@ -25,8 +25,9 @@ export * from './components/alert';
 // Advanced Components
 export * from './components/command-palette';
 export * from './components/diff-viewer';
-export * from './components/virtualized-diff-viewer';
-// Use simplified version temporarily to avoid react-window issues
+// Temporarily skip virtualized viewer due to react-window issues
+// export * from './components/virtualized-diff-viewer';
+// Use simplified version to avoid react-window issues
 export { EnhancedDiffViewer } from './components/enhanced-diff-viewer-simple';
 export type { EnhancedDiffViewerProps } from './components/enhanced-diff-viewer-simple';
 export * from './components/diff-insights';
@@ -64,4 +65,5 @@ export * from './providers/accessibility-provider';
 export type { Theme } from './hooks/use-theme';
 export type { DiffLine, DiffHunk, DiffInsights, FileStatus } from './types/diff';
 export type { DiffOptions } from './components/diff-filters';
+export { DEFAULT_OPTIONS } from './components/diff-filters';
 export type { FileNode } from './components/file-tree';
