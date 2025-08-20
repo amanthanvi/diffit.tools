@@ -20,7 +20,7 @@
     "@diffit/ui": "file:../../packages/ui",
     "@types/react": "^18.2.48",
     "@types/react-dom": "^18.2.18",
-    "astro": "^4.2.1",
+    "astro": "^4.16.19",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "tailwindcss": "^3.4.1"
